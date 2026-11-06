@@ -79,6 +79,8 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .install code { flex: 1; min-width: 0; padding: 8px 8px 8px 0; overflow-x: auto; white-space: nowrap; color: var(--ink); font-size: 14px; scrollbar-width: none; }
 .install button, .code button { flex: none; padding: 9px 18px; border: 0; border-radius: 99px; background: var(--ink); color: var(--bg); font: 600 14px/1.2 var(--sans); cursor: pointer; transition: transform .15s, background .15s; }
 .install button:hover, .code button:hover { background: var(--pink); color: #fff; transform: scale(1.04); }
+.then { margin-top: 14px; color: var(--muted); font-size: 15px; }
+.then code { margin: 0 2px; padding: 3px 9px; border-radius: 7px; background: var(--soft); color: var(--ink); font-size: 14px; }
 .langs { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 22px; color: var(--ink); font-size: 16px; font-weight: 500; letter-spacing: -.01em; }
 .langs .soon { color: var(--muted); font-weight: 400; }
 
@@ -177,6 +179,7 @@ footer strong { color: var(--body); font-weight: 500; }
     <div>
       <p class="lede">Agents open them faster than anyone can read them. Cribelo tells you what deserves your eyes.</p>
       <div class="install"><code>curl -fsSL https://cribelo.github.io/install.sh | sh</code><button type="button" hidden>Copy</button></div>
+    <p class="then">Then run <code>cribelo</code> on the branch you want reviewed.</p>
       <ul class="langs" aria-label="Supported languages"><li>Go</li><li>PHP</li><li>Python</li><li>Rust</li><li>TypeScript</li><li>Java</li><li>C#</li><li class="soon">and more coming</li></ul>
     </div>
     <picture class="bird">
@@ -256,6 +259,7 @@ jobs:
   <section class="end rise">
     <p>It won't find your bugs. <span>It tells you where to look.</span></p>
     <div class="install"><code>curl -fsSL https://cribelo.github.io/install.sh | sh</code><button type="button" hidden>Copy</button></div>
+    <p class="then">Then run <code>cribelo</code> on the branch you want reviewed.</p>
   </section>
 
   <footer>
