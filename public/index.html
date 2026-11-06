@@ -90,11 +90,15 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .say .aside { margin-top: .7em; color: var(--pink-text); }
 
 .play { padding-bottom: clamp(96px, 16vh, 180px); }
-.time { display: flex; flex-wrap: wrap; gap: 4px 30px; margin-top: 26px; }
+.time { position: relative; display: inline-flex; max-width: 100%; margin-top: 30px; padding: 6px; border-radius: 99px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); overflow-x: auto; scrollbar-width: none; }
 .time[hidden] { display: none; }
-.time button { padding: 4px 0; border: 0; background: none; color: var(--faint); font: 600 clamp(1.3rem, 2.8vw, 2.2rem)/1.2 var(--sans); letter-spacing: -.035em; cursor: pointer; transition: color .2s; }
-.time button:hover { color: var(--body); }
-.time button[aria-pressed="true"] { color: var(--pink-text); }
+.time .knob { position: absolute; top: 6px; left: 0; height: calc(100% - 12px); width: 0; border-radius: 99px; background: var(--pink); box-shadow: 0 6px 18px -6px var(--pink); transition: transform .45s cubic-bezier(.3,1.35,.5,1), width .45s cubic-bezier(.3,1.35,.5,1); pointer-events: none; }
+.time button { position: relative; flex: none; padding: 12px clamp(14px, 2vw, 26px); border: 0; border-radius: 99px; background: none; color: var(--body); font: 600 clamp(1rem, 2vw, 1.45rem)/1.1 var(--sans); letter-spacing: -.025em; white-space: nowrap; cursor: pointer; transition: color .3s, background .2s; }
+.time button:hover { color: var(--ink); background: var(--line); }
+.time button[aria-pressed="true"], .time button[aria-pressed="true"]:hover { color: #fff; background: none; }
+.time:not(.ready) button[aria-pressed="true"] { background: var(--pink); }
+@media (prefers-reduced-motion: reduce) { .time .knob { transition: none; } }
+@media (max-width: 520px) { .time { padding: 4px; } .time .knob { top: 4px; height: calc(100% - 8px); } .time button { padding: 10px 9px; font-size: 15px; letter-spacing: -.01em; } }
 .board { display: grid; grid-template-columns: minmax(0, 460px) minmax(0, 1fr); gap: clamp(40px, 7vw, 96px); margin-top: clamp(40px, 7vh, 72px); align-items: start; }
 .squares { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
 .squares i { aspect-ratio: 1; border-radius: 22%; transition: background .4s, transform .4s cubic-bezier(.3,1.6,.5,1); }
@@ -103,17 +107,31 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .squares i.hot { transform: scale(1.16); box-shadow: 0 0 0 2px var(--ink); }
 .readout { min-height: 4.8em; margin-top: 18px; font-size: 14px; color: var(--muted); }
 .readout code { display: block; color: var(--ink); overflow-wrap: anywhere; font-size: 13.5px; }
-.count { color: var(--ink); font-size: clamp(2.6rem, 5.4vw, 4.4rem); font-weight: 600; line-height: 1; letter-spacing: -.055em; }
-.sub { margin: 8px 0 26px; color: var(--muted); font-size: 18px; letter-spacing: -.01em; }
-.rows { min-height: 300px; }
-.rows li { padding: 9px 12px; margin: 0 -12px; border-radius: 12px; transition: background .15s; }
-.rows li.hot { background: var(--soft); }
-.rows code { display: block; color: var(--ink); font-size: 15px; font-weight: 500; overflow-wrap: anywhere; }
-.rows small { display: block; color: var(--muted); font-size: 14px; }
-.rows .n { display: none; }
-.more { min-height: 1.5em; margin-top: 6px; color: var(--muted); font-size: 15px; }
-.skip { margin-top: 18px; color: var(--muted); font-size: 15px; }
-.skip b { color: var(--body); font-weight: 600; }
+.term { overflow: hidden; border: 1px solid #262d37; border-radius: 16px; background: #0b0e13; color: #a4aeba; font: 13.5px/1.6 var(--mono); box-shadow: 0 30px 60px -30px rgba(13,17,23,.45); }
+.term .bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: #161b22; border-bottom: 1px solid #262d37; }
+.term .bar i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.term .bar i:nth-child(2) { background: #febc2e; } .term .bar i:nth-child(3) { background: #28c840; }
+.term .bar span { flex: 1; margin-right: 32px; text-align: center; color: #6e7886; font-size: 12.5px; }
+.term .cmd { display: flex; align-items: center; gap: 12px; padding: 18px 20px 0; }
+.term .cmd code { flex: 1; min-width: 0; color: #f2f5f8; font-size: 15px; font-weight: 500; white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+.term .ps { color: #ff9dbb; user-select: none; }
+.term .caret { display: inline-block; width: .55em; height: 1.1em; margin-left: 2px; vertical-align: -.2em; background: #ff9dbb; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.term .cmd button { flex: none; padding: 6px 14px; border: 1px solid #3a434f; border-radius: 99px; background: none; color: #f2f5f8; font: 600 13px/1.2 var(--sans); cursor: pointer; transition: background .15s, border-color .15s; }
+.term .cmd button:hover { background: var(--pink); border-color: var(--pink); color: #fff; }
+.out { padding: 14px 20px 22px; }
+.out p { margin-top: 2px; }
+.out .dim { color: #6e7886; }
+.out .head { margin-top: 14px; color: #f2f5f8; font-weight: 600; }
+.out #sub { color: #ff9dbb; font-weight: 500; }
+.rows { min-height: 252px; margin-top: 4px; }
+.rows li { display: flex; gap: 12px; padding: 4px 10px; margin: 0 -10px; border-radius: 8px; transition: background .15s; }
+.rows li.hot { background: rgba(255,255,255,.08); }
+.rows .n { flex: none; width: 1.4em; text-align: right; color: #ff9dbb; }
+.rows code { display: block; color: #f2f5f8; overflow-wrap: anywhere; }
+.rows small { display: block; color: #848e9b; font-size: 12.5px; line-height: 1.45; }
+.more { min-height: 1.6em; padding-left: 2.4em; color: #6e7886; }
+.skipwhy { padding-left: 2.4em; text-indent: 0; }
 .caption { margin-top: 44px; color: var(--muted); font-size: 14px; }
 
 .dark { background: var(--ink); color: var(--bg); padding: clamp(110px, 20vh, 220px) 0; }
@@ -196,7 +214,9 @@ footer strong { color: var(--body); font-weight: 500; }
   <section class="play rise" aria-label="A real Cribelo plan">
     <h2>How long do you have?</h2>
     <div class="time" id="time" role="group" aria-label="Time available" hidden>
-      <button type="button" data-k="30" aria-pressed="false">30 minutes</button>
+      <span class="knob" aria-hidden="true"></span>
+      <button type="button" data-k="5" aria-pressed="false">5 min</button>
+      <button type="button" data-k="30" aria-pressed="false">30 min</button>
       <button type="button" data-k="60" aria-pressed="false">1 hour</button>
       <button type="button" data-k="120" aria-pressed="false">2 hours</button>
       <button type="button" data-k="none" aria-pressed="true">All day</button>
@@ -207,17 +227,24 @@ footer strong { color: var(--body); font-weight: 500; }
         <p class="readout" id="readout">35 files changed. Point at one to see why.</p>
       </div>
       <div>
-        <p class="count" id="summary">Read 13 files.</p>
-        <p class="sub" id="sub">About 168 minutes.</p>
-        <ol class="rows" id="rows">
+        <div class="term">
+          <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>~/ast-metrics</span></div>
+          <div class="cmd"><code><span class="ps">$ </span><span id="cmd">cribelo</span><span class="caret" aria-hidden="true"></span></code><button type="button" hidden>Copy</button></div>
+          <div class="out" aria-live="polite">
+            <p class="dim">cribelo · 35 files changed vs origin/main</p>
+            <p class="head"><span id="summary">Read first (13 of 18)</span> <span id="sub">~168 min</span></p>
+            <ol class="rows" id="rows">
 <li data-i="12"><span class="n">1</span><div><code>internal/cribelo/backtest.go</code><small>new replay() complexity 25, +7 more, +456 lines, new file</small></div></li>
 <li data-i="24"><span class="n">2</span><div><code>internal/cribelo/plan.go</code><small>new Run() complexity 35, +8 more, +363 lines, new file</small></div></li>
 <li data-i="30"><span class="n">3</span><div><code>internal/cribelo/clones.go</code><small>new Tokenize() complexity 37, +6 more, +244 lines, new file</small></div></li>
 <li data-i="31"><span class="n">4</span><div><code>internal/cribelo/git.go</code><small>+412 lines, new Changes() complexity 10, +18 more, new file</small></div></li>
 <li data-i="0"><span class="n">5</span><div><code>cribelo/cli.go</code><small>+267 lines, new Run() complexity 28, +4 more, new file</small></div></li>
-        </ol>
-        <p class="more" id="more">and 8 more</p>
-        <p class="skip"><b>Skip <span id="skipn">22</span>.</b> <span id="skipwhy">tests only 16, ranked lower 4, no measurable change 1, not analyzed 1</span></p>
+            </ol>
+            <p class="more" id="more">+ 8 more</p>
+            <p class="head">Skip (<span id="skipn">22</span>)</p>
+            <p class="dim skipwhy" id="skipwhy">tests only 16 · ranked lower 4 · no measurable change 1 · not analyzed 1</p>
+          </div>
+        </div>
       </div>
     </div>
     <p class="caption">Real output of <code>cribelo</code> on the branch that added it to AST Metrics.</p>
@@ -270,7 +297,7 @@ jobs:
 
 <script>
 var FILES = [{"p":"cribelo/cli.go","r":"+267 lines, new Run() complexity 28, +4 more, new file","l":2},{"p":"internal/analyzer/file_dependencies.go","r":"imported by 83 files, +25 lines, no test touched","l":2},{"p":"internal/cribelo/git_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/features.go","r":"+205 lines, new features() complexity 23, +5 more, new file","l":2},{"p":"internal/cribelo/classify_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/diff.go","r":"+179 lines, new parseHunks() complexity 9, +7 more, new file","l":2},{"p":"internal/cribelo/config.go","r":"+69 lines, new Ignored() complexity 8, +1 more, new file","l":2},{"p":"internal/cribelo/plan_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/reasons.go","r":"new reasons() complexity 16, +4 more, +105 lines, new file","l":2},{"p":"internal/cribelo/features_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/backtest_unit_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/reasons_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/backtest.go","r":"new replay() complexity 25, +7 more, +456 lines, new file","l":2},{"p":"internal/cribelo/calibrate_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/model.go","r":"+225 lines, new LoadWeights() complexity 12, +5 more, new file","l":2},{"p":"internal/cribelo/fixwords_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/calibrate.go","r":"+214 lines, new standardize() complexity 11, +3 more, new file","l":2},{"p":"internal/cribelo/render_test.go","r":"tests only","l":0,"u":1},{"p":"cribelo/cli_test.go","r":"tests only","l":0,"u":1},{"p":"internal/file/finder.go","r":"+26 lines, imported by 9 files, new NewFileDiscoveryFromFiles() complexity 5","l":2},{"p":"internal/cribelo/model_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/clones_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/render.go","r":"+222 lines, new Explain() complexity 11, +8 more, new file","l":2},{"p":"cmd/cribelo/main.go","r":"+14 lines, no test touched, new file","l":2},{"p":"internal/cribelo/plan.go","r":"new Run() complexity 35, +8 more, +363 lines, new file","l":2},{"p":"Makefile","r":"not analyzed","l":1,"u":1},{"p":"internal/cribelo/parse.go","r":"+168 lines, new buildCloneIndex() complexity 11, +5 more, new file","l":2},{"p":"internal/cribelo/plan_helpers_test.go","r":"tests only","l":0,"u":1},{"p":"internal/review/review.go","r":"+6 lines, imported by 3 files, no test touched","l":2},{"p":"internal/cribelo/diff_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/clones.go","r":"new Tokenize() complexity 37, +6 more, +244 lines, new file","l":2},{"p":"internal/cribelo/git.go","r":"+412 lines, new Changes() complexity 10, +18 more, new file","l":2},{"p":"internal/cribelo/config_test.go","r":"tests only","l":0,"u":1},{"p":"internal/cribelo/classify.go","r":"new Classify() complexity 11, +6 more, +160 lines, new file","l":2},{"p":"internal/cribelo/backtest_test.go","r":"tests only","l":0,"u":1}];
-var PLANS = {"none":{"m":168,"read":[12,24,30,31,0,3,22,16,14,33,5,26,8],"s":22,"why":"tests only 16, ranked lower 4, no measurable change 1, not analyzed 1"},"30":{"m":30,"read":[12,8,23],"s":32,"why":"tests only 16, ranked lower 14, no measurable change 1, not analyzed 1"},"60":{"m":60,"read":[12,24,30,19,1,23],"s":29,"why":"tests only 16, ranked lower 11, no measurable change 1, not analyzed 1"},"120":{"m":120,"read":[12,24,30,31,0,3,22,8,23],"s":26,"why":"tests only 16, ranked lower 8, no measurable change 1, not analyzed 1"}};
+var PLANS = {"5":{"m":23,"read":[12],"s":34,"why":"ranked lower 16, tests only 16, no measurable change 1, not analyzed 1"},"none":{"m":168,"read":[12,24,30,31,0,3,22,16,14,33,5,26,8],"s":22,"why":"tests only 16, ranked lower 4, no measurable change 1, not analyzed 1"},"30":{"m":30,"read":[12,8,23],"s":32,"why":"tests only 16, ranked lower 14, no measurable change 1, not analyzed 1"},"60":{"m":60,"read":[12,24,30,19,1,23],"s":29,"why":"tests only 16, ranked lower 11, no measurable change 1, not analyzed 1"},"120":{"m":120,"read":[12,24,30,31,0,3,22,8,23],"s":26,"why":"tests only 16, ranked lower 8, no measurable change 1, not analyzed 1"}};
 (function () {
   var grid = document.getElementById('squares');
   var readout = document.getElementById('readout');
@@ -307,14 +334,27 @@ var PLANS = {"none":{"m":168,"read":[12,24,30,31,0,3,22,16,14,33,5,26,8],"s":22,
       box.appendChild(c); box.appendChild(sm); li.appendChild(num); li.appendChild(box); rows.appendChild(li);
     });
     var extra = plan.read.length - 5;
-    document.getElementById('more').textContent = extra > 0 ? 'and ' + extra + ' more' : '';
-    document.getElementById('summary').textContent = 'Read ' + plan.read.length + ' files.';
-    document.getElementById('sub').textContent = 'About ' + plan.m + ' minutes.';
+    document.getElementById('more').textContent = extra > 0 ? '+ ' + extra + ' more' : '';
+    document.getElementById('summary').textContent = 'Read first (' + plan.read.length + ' of 18)';
+    document.getElementById('sub').textContent = '~' + plan.m + ' min';
     document.getElementById('skipn').textContent = plan.s;
-    document.getElementById('skipwhy').textContent = plan.why;
+    document.getElementById('skipwhy').textContent = plan.why.split(', ').join(' · ');
+  }
+  var cmd = document.getElementById('cmd'), FLAGS = { '5': '5m', '30': '30m', '60': '1h', '120': '2h' }, typing;
+  function type(text) {
+    clearInterval(typing);
+    if (still) { cmd.textContent = text; return; }
+    var base = 'cribelo';
+    cmd.textContent = base;
+    var rest = text.slice(base.length), n = 0;
+    typing = setInterval(function () {
+      if (n >= rest.length) { clearInterval(typing); return; }
+      cmd.textContent = base + rest.slice(0, ++n);
+    }, 28);
   }
   function pick(k) {
     current = k;
+    type(FLAGS[k] ? 'cribelo --budget ' + FLAGS[k] : 'cribelo');
     var plan = PLANS[k];
     timers.forEach(clearTimeout); timers = [];
     squares.forEach(function (s) { s.classList.remove('on'); });
@@ -332,19 +372,43 @@ var PLANS = {"none":{"m":168,"read":[12,24,30,31,0,3,22,16,14,33,5,26,8],"s":22,
     if (r) show(+r.dataset.i);
   });
 
-  var time = document.getElementById('time');
+  var time = document.getElementById('time'), knob = time.querySelector('.knob');
+  var buttons = Array.prototype.slice.call(time.querySelectorAll('button')), tour = [], touched = false;
   time.hidden = false;
+  function slide() {
+    var b = time.querySelector('[aria-pressed="true"]');
+    knob.style.width = b.offsetWidth + 'px';
+    knob.style.transform = 'translateX(' + b.offsetLeft + 'px)';
+  }
+  function select(b) {
+    buttons.forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+    slide();
+    pick(b.dataset.k);
+  }
+  function stopTour() { touched = true; tour.forEach(clearTimeout); tour = []; }
+  slide(); time.classList.add('ready');
+  addEventListener('resize', slide);
+  if (document.fonts) document.fonts.ready.then(slide);
   time.addEventListener('click', function (e) {
     var b = e.target.closest('button');
     if (!b) return;
-    time.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
-    pick(b.dataset.k);
+    stopTour();
+    select(b);
   });
+  time.addEventListener('pointerenter', stopTour);
+  time.addEventListener('focusin', stopTour);
 
+  function start() {
+    if (still) { pick('none'); return; }
+    // Walk once through every budget, shortest first, then settle on All day.
+    buttons.forEach(function (b, n) {
+      tour.push(setTimeout(function () { if (!touched) select(b); }, n * 1500));
+    });
+  }
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) { io.disconnect(); pick('none'); }
-    }, { threshold: 0.3 });
+      if (es[0].isIntersecting) { io.disconnect(); start(); }
+    }, { threshold: 0.5 });
     io.observe(grid);
   } else { pick('none'); }
 
@@ -369,6 +433,7 @@ var PLANS = {"none":{"m":168,"read":[12,24,30,31,0,3,22,16,14,33,5,26,8],"s":22,
   document.querySelectorAll('.install').forEach(function (box) {
     copier(box.querySelector('button'), function () { return box.querySelector('code').textContent; });
   });
+  copier(document.querySelector('.term .cmd button'), function () { return document.getElementById('cmd').textContent; });
   document.querySelectorAll('.code').forEach(function (box) {
     copier(box.querySelector('button'), function () { return box.querySelector('pre').textContent; });
   });
