@@ -169,8 +169,8 @@ pre { margin: 0; padding: 30px 32px; overflow-x: auto; background: var(--soft); 
 pre b { color: var(--pink-text); font-weight: 500; }
 
 .end { padding: clamp(120px, 22vh, 240px) 0; text-align: center; }
-.end p { color: var(--ink); font-size: clamp(2.8rem, 7.4vw, 6.2rem); line-height: 1; letter-spacing: -.055em; font-weight: 600; margin-bottom: 44px; text-wrap: balance; }
-.end p span { display: block; color: var(--faint); }
+.end p:not(.then) { color: var(--ink); font-size: clamp(2.8rem, 7.4vw, 6.2rem); line-height: 1; letter-spacing: -.055em; font-weight: 600; margin-bottom: 44px; text-wrap: balance; }
+.end p:not(.then) span { display: block; color: var(--faint); }
 .end .install { margin-inline: auto; text-align: left; }
 
 footer { padding: 28px 0 44px; color: var(--muted); font-size: 14px; }
