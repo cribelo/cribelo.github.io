@@ -494,7 +494,10 @@ var PLANS = {"5":{"m":14,"read":[6],"why":"ranked lower 17 · tests only 12 · n
       });
     });
   }
+  var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+  var mac = /mac/i.test(platform) && navigator.maxTouchPoints < 2;
   document.querySelectorAll('.install').forEach(function (box) {
+    if (mac) box.querySelector('code').textContent = 'brew install cribelo/tap/cribelo';
     copier(box.querySelector('button'), function () { return box.querySelector('code').textContent; });
   });
   copier(document.querySelector('.term .cmd button'), function () { return document.getElementById('cmd').textContent; });
