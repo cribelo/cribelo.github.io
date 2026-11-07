@@ -305,7 +305,7 @@ footer strong { color: var(--body); font-weight: 500; }
       <dt>new exported functions called nowhere yet</dt><dd>Exported functions the change adds and no other file calls.</dd>
       <dt>similar to a function the change does not touch</dt><dd>A clone of a touched function, left as it was.</dd>
       <dt>fixed N times in the past year</dt><dd><code>git log -L</code> on the lines of the function. A function fixed twice is worth a second look.</dd>
-      <dt>changed lines not run by any test</dt><dd>Read from the coverage report of your last test run: lcov, Cobertura, Clover or a Go profile.</dd>
+      <dt>changed lines not run by any test</dt><dd>Read from the coverage report of your last test run: lcov, Cobertura, Clover or a Go profile. Stated from ten uncovered lines, or half of the changed ones.</dd>
     </dl>
 
     <h2 id="order">3. Order: how to read</h2>
@@ -404,7 +404,7 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     <ul>
       <li>The reading time, twenty lines a minute, is a convention taken from RAID (Brito and Valente, 2021), not a measurement.</li>
       <li>Hunk natures were checked by hand on samples in Python, Rust, TypeScript and Java. Not in C#.</li>
-      <li>Coverage facts were tested on fixtures only: no repository of the bench ships a coverage report at the replayed commit.</li>
+      <li>Coverage facts were tested on fixtures and on one real run (AST Metrics pull request #196 with its Go profile): no repository of the bench ships a coverage report at the replayed commit.</li>
     </ul>
 
     <h2 id="not">What it does not do</h2>
