@@ -1,6 +1,6 @@
 # cribelo.github.io
 
-The website of [Cribelo](https://github.com/cribelo/cribelo). One HTML page in `public/`, no build step. Every push to `main` deploys it to GitHub Pages.
+The website of [Cribelo](https://github.com/cribelo/cribelo). HTML pages in `public/`, no build step. Every push to `main` deploys it to GitHub Pages.
 
 ```sh
 python3 -m http.server -d public 8000

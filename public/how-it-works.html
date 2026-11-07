@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Cribelo works</title>
+<meta name="description" content="How Cribelo draws the reading map of a pull request: the nature of every hunk, the facts the diff does not show, the reading order, and what was measured on 28 repositories.">
+<link rel="canonical" href="https://cribelo.github.io/how-it-works.html">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1117">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://cribelo.github.io/how-it-works.html">
+<meta property="og:title" content="How Cribelo works">
+<meta property="og:description" content="Hunk natures, structural facts, reading order. Measured on 28 repositories.">
+<meta property="og:image" content="https://cribelo.github.io/assets/social.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+@font-face { font-family: Geist; src: url(assets/fonts/geist.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url(assets/fonts/geist-mono.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+:root {
+  --bg: #fff; --ink: #0d1117; --body: #48515c; --muted: #68717c; --faint: #8b949e; --soft: #f5f6f8; --line: #e3e6ea; --skip: #d4d9df;
+  --pink: #ec6f96; --pink-text: #b3245c; --tint: #fcf0f4;
+  --sans: Geist, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117; --ink: #f2f5f8; --body: #a4aeba; --muted: #848e9b; --faint: #6e7886; --soft: #151b23; --line: #262d37; --skip: #363f4b;
+    --pink: #ee7aa0; --pink-text: #ff9dbb; --tint: #1a1219;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--body); font: 18px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+a:hover { color: var(--pink-text); }
+:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; border-radius: 4px; }
+code { font-family: var(--mono); font-size: .88em; }
+p code { padding: 2px 6px; border-radius: 6px; background: var(--soft); color: var(--ink); }
+.wrap { width: min(100% - 48px, 1180px); margin-inline: auto; }
+
+nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; font-size: 15px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 600; font-size: 18px; letter-spacing: -.02em; text-decoration: none; }
+nav div a { margin-left: 24px; text-decoration: none; }
+nav div a[aria-current] { color: var(--ink); font-weight: 500; }
+
+.doc { max-width: 760px; margin: 0 auto; padding-bottom: 40px; }
+h1, h2, h3 { margin: 0; color: var(--ink); font-weight: 600; letter-spacing: -.045em; line-height: 1.05; text-wrap: balance; }
+h1 { font-size: clamp(2.4rem, 5.4vw, 3.8rem); padding-top: clamp(28px, 6vh, 72px); }
+.lede { max-width: 30em; margin: 24px 0 0; color: var(--ink); font-size: clamp(1.15rem, 1.8vw, 1.4rem); line-height: 1.35; letter-spacing: -.02em; }
+h2 { font-size: clamp(1.7rem, 3.2vw, 2.3rem); margin: clamp(60px, 10vh, 96px) 0 18px; letter-spacing: -.035em; }
+h3 { font-size: 1.15rem; margin: 36px 0 10px; letter-spacing: -.02em; }
+p { margin: 0 0 16px; max-width: 42em; text-wrap: pretty; }
+ul, ol { margin: 0 0 16px; padding-left: 1.2em; }
+li { margin-bottom: 6px; }
+
+table { width: 100%; border-collapse: collapse; margin: 22px 0 26px; font-size: 15.5px; line-height: 1.45; }
+th, td { padding: 10px 14px 10px 0; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { border-top: 0; padding-top: 0; color: var(--muted); font-weight: 500; font-size: 13.5px; letter-spacing: .01em; }
+td:first-child { color: var(--ink); font-weight: 500; white-space: nowrap; }
+td:last-child, th:last-child { padding-right: 0; }
+.num td:not(:first-child), .num th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.num tr:last-child td { border-top: 2px solid var(--line); color: var(--ink); }
+.cost { color: var(--pink-text); white-space: nowrap; }
+
+dl { margin: 0 0 16px; }
+dt { color: var(--ink); font-weight: 500; }
+dd { margin: 2px 0 14px; max-width: 42em; }
+
+figure { margin: 30px 0 34px; }
+.scroll { overflow-x: auto; scrollbar-width: thin; }
+figure svg { display: block; width: 100%; height: auto; min-width: 560px; color: var(--muted); }
+figcaption { margin-top: 12px; color: var(--muted); font-size: 14.5px; max-width: 44em; }
+svg .box { fill: var(--soft); stroke: var(--line); }
+svg .file { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+svg .t { fill: var(--ink); font: 500 14px var(--sans); }
+svg .s { fill: var(--muted); font: 12.5px var(--sans); }
+svg .m { font-family: var(--mono); font-size: 12.5px; }
+svg .p { fill: var(--pink-text); }
+svg .ln { stroke: var(--muted); fill: none; stroke-width: 1.5; }
+svg .new { stroke: var(--pink); stroke-width: 2.2; }
+svg .dash { stroke-dasharray: 4 4; }
+svg .read { fill: var(--pink); }
+svg .skip { fill: var(--skip); }
+svg .ghost { fill: var(--skip); opacity: .45; }
+svg .num { fill: var(--pink); }
+svg .numt { fill: #fff; font: 600 12px var(--sans); text-anchor: middle; }
+svg marker path { fill: currentColor; }
+svg marker.pinkm path { fill: var(--pink); }
+
+.term { margin: 24px 0 10px; padding: 18px 20px 20px; overflow-x: auto; border: 1px solid #262d37; border-radius: 16px; background: #0b0e13; color: #d6dbe5; font: 12.5px/1.6 var(--mono); scrollbar-width: thin; scrollbar-color: #3a434f transparent; }
+.term .ps { color: #ff9dbb; }
+.term .dim { color: #8a93a3; }
+.term .head { color: #fff; font-weight: 700; }
+.term .pa { color: #79c0ff; }
+.term .k0 { color: #3fb950; } .term .bad { color: #ff7b72; }
+.pre { margin: 0 0 20px; padding: 18px 22px; overflow-x: auto; background: var(--soft); border-radius: 16px; color: var(--body); font: 13.5px/1.6 var(--mono); }
+.pre b { color: var(--pink-text); font-weight: 500; }
+
+footer { padding: 28px 0 44px; color: var(--muted); font-size: 14px; }
+footer p { margin-bottom: 6px; max-width: 48em; }
+footer strong { color: var(--body); font-weight: 500; }
+
+@media (max-width: 480px) {
+  .wrap { width: calc(100% - 36px); }
+  nav div a:first-child { display: none; }
+  body { font-size: 17px; }
+  table { font-size: 14.5px; }
+  td:first-child { white-space: normal; }
+  .natures, .natures tbody, .natures tr, .natures td { display: block; }
+  .natures thead { display: none; }
+  .natures tr { padding: 12px 0; border-top: 1px solid var(--line); }
+  .natures td { border: 0; padding: 0 0 4px; }
+  .natures td:first-child { font-size: 16px; }
+  .cost { white-space: normal; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="./"><img src="assets/favicon.png" width="26" height="26" alt="">cribelo</a>
+    <div>
+      <a href="how-it-works.html" aria-current="page">How it works</a>
+      <a href="https://github.com/cribelo/cribelo">GitHub</a>
+    </div>
+  </nav>
+
+  <main class="doc">
+    <h1>How Cribelo works</h1>
+    <p class="lede">Cribelo reads the diff of a branch and draws its reading map: the lines that still need a human once moves, renames, formatting and imports are set aside, the facts about the structure that the diff does not show, and the order to read the files in. No model. Same change, same answer, on every machine.</p>
+
+    <h2 id="passes">One change, three passes</h2>
+    <p>The change is the diff between the merge base of your branch and your working tree. Generated files, lock files and binaries are set aside. The rest is parsed before and after the change with the tree-sitter parsers of AST Metrics, then goes through three passes.</p>
+    <figure>
+      <div class="scroll">
+      <svg viewBox="0 0 760 112" role="img" aria-label="The diff goes through three passes: hunks, facts, order.">
+        <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="box" x="0" y="18" width="150" height="76" rx="14"/>
+        <text class="t" x="75" y="52" text-anchor="middle">The diff</text>
+        <text class="s" x="75" y="72" text-anchor="middle">merge base to your tree</text>
+        <path class="ln" d="M152 56H196" marker-end="url(#a1)"/>
+        <rect class="box" x="200" y="18" width="160" height="76" rx="14"/>
+        <text class="t" x="280" y="52" text-anchor="middle">1. Hunks</text>
+        <text class="s" x="280" y="72" text-anchor="middle">what is left to read</text>
+        <path class="ln" d="M362 56H396" marker-end="url(#a1)"/>
+        <rect class="box" x="400" y="18" width="160" height="76" rx="14"/>
+        <text class="t" x="480" y="52" text-anchor="middle">2. Facts</text>
+        <text class="s" x="480" y="72" text-anchor="middle">what the diff hides</text>
+        <path class="ln" d="M562 56H596" marker-end="url(#a1)"/>
+        <rect class="box" x="600" y="18" width="160" height="76" rx="14"/>
+        <text class="t" x="680" y="52" text-anchor="middle">3. Order</text>
+        <text class="s" x="680" y="72" text-anchor="middle">how to read it</text>
+      </svg>
+      </div>
+    </figure>
+
+    <h2 id="hunks">1. Hunks: what is left to read</h2>
+    <p>Every hunk of the diff gets one nature. The first rule that applies wins, and the nature sets how many lines you read.</p>
+    <table class="natures">
+      <thead><tr><th>Nature</th><th>Rule</th><th>You read</th></tr></thead>
+      <tbody>
+        <tr><td>moved</td><td>Half or more of its lines sit in a function that arrived from another place with the same body, identifiers aside.</td><td class="cost">2 lines, plus every new line</td></tr>
+        <tr><td>extracted</td><td>Its added lines are a function cut out of one that shrank.</td><td class="cost">2 lines</td></tr>
+        <tr><td>rename</td><td>It differs from its old lines by one consistent <code>old → new</code> mapping of identifiers, seen in two hunks at least. The old name is gone from the file.</td><td class="cost">1 line</td></tr>
+        <tr><td>format</td><td>Same tokens, whitespace aside.</td><td class="cost">nothing</td></tr>
+        <tr><td>comment</td><td>Only comments differ.</td><td class="cost">nothing</td></tr>
+        <tr><td>imports</td><td>Import statements only.</td><td class="cost">nothing</td></tr>
+        <tr><td>behavior</td><td>Everything else.</td><td class="cost">every line</td></tr>
+      </tbody>
+    </table>
+    <figure>
+      <div class="scroll">
+      <svg viewBox="0 0 760 392" role="img" aria-label="A diff of four hunks: imports, a moved function with one new line, a rename and a behavior change. 28 lines changed, 13 to read.">
+        <rect class="skip" x="560" y="4" width="12" height="12" rx="3"/><text class="s" x="578" y="15">set aside</text>
+        <rect class="read" x="660" y="4" width="12" height="12" rx="3"/><text class="s" x="678" y="15">to read</text>
+        <!-- hunk 1: imports -->
+        <rect class="skip" x="0" y="30" width="150" height="7" rx="2"/>
+        <rect class="skip" x="0" y="40" width="196" height="7" rx="2"/>
+        <rect class="skip" x="0" y="50" width="130" height="7" rx="2"/>
+        <text class="t" x="330" y="46">imports</text>
+        <text class="s" x="330" y="64">3 lines, nothing to read</text>
+        <!-- hunk 2: moved -->
+        <rect class="skip" x="0" y="76" width="210" height="7" rx="2"/>
+        <rect class="skip" x="0" y="86" width="250" height="7" rx="2"/>
+        <rect class="skip" x="0" y="96" width="172" height="7" rx="2"/>
+        <rect class="skip" x="0" y="106" width="238" height="7" rx="2"/>
+        <rect class="skip" x="0" y="116" width="120" height="7" rx="2"/>
+        <rect class="read" x="0" y="126" width="226" height="7" rx="2"/>
+        <rect class="skip" x="0" y="136" width="260" height="7" rx="2"/>
+        <rect class="skip" x="0" y="146" width="188" height="7" rx="2"/>
+        <rect class="skip" x="0" y="156" width="244" height="7" rx="2"/>
+        <rect class="skip" x="0" y="166" width="150" height="7" rx="2"/>
+        <rect class="skip" x="0" y="176" width="202" height="7" rx="2"/>
+        <rect class="skip" x="0" y="186" width="96" height="7" rx="2"/>
+        <text class="t" x="330" y="120">moved from <tspan class="m">parser.go</tspan></text>
+        <text class="s" x="330" y="138">12 lines: a glance at 2, and 1 line to read,</text>
+        <text class="s" x="330" y="155">the one that was not in the original function</text>
+        <!-- hunk 3: rename -->
+        <rect class="skip" x="0" y="212" width="180" height="7" rx="2"/>
+        <rect class="skip" x="0" y="222" width="236" height="7" rx="2"/>
+        <rect class="skip" x="0" y="232" width="142" height="7" rx="2"/>
+        <rect class="skip" x="0" y="242" width="214" height="7" rx="2"/>
+        <text class="t" x="330" y="228">rename <tspan class="m">isDone → done</tspan></text>
+        <text class="s" x="330" y="246">4 lines, 1 to read</text>
+        <!-- hunk 4: behavior -->
+        <rect class="read" x="0" y="268" width="200" height="7" rx="2"/>
+        <rect class="read" x="0" y="278" width="246" height="7" rx="2"/>
+        <rect class="read" x="0" y="288" width="160" height="7" rx="2"/>
+        <rect class="read" x="0" y="298" width="228" height="7" rx="2"/>
+        <rect class="read" x="0" y="308" width="124" height="7" rx="2"/>
+        <rect class="read" x="0" y="318" width="254" height="7" rx="2"/>
+        <rect class="read" x="0" y="328" width="190" height="7" rx="2"/>
+        <rect class="read" x="0" y="338" width="216" height="7" rx="2"/>
+        <rect class="read" x="0" y="348" width="140" height="7" rx="2"/>
+        <text class="t" x="330" y="306">behavior</text>
+        <text class="s" x="330" y="324">9 lines, 9 to read</text>
+        <line x1="0" y1="370" x2="760" y2="370" stroke="var(--line)"/>
+        <text class="t" x="0" y="389">28 changed lines, <tspan class="p">13 to read</tspan></text>
+      </svg>
+      </div>
+      <figcaption>One file of a change. The mechanical hunks are set aside, the lines they could hide are kept.</figcaption>
+    </figure>
+    <p>A move is matched function by function: same tokens, same tokens once identifiers are normalized, or 80&nbsp;% of common fingerprints, the method of RefDiff. Then it is carried line by line. A line of the moved hunk that was not in the original function, or that names something the original never named, is new, and you read it. A file whose every hunk is mechanical never enters the reading list. It is listed under Skip with its reason: moved code only, renames only, formatting only.</p>
+    <figure>
+      <div class="scroll">
+      <svg viewBox="0 0 760 236" role="img" aria-label="A function block leaves TypeSpecifier.php and lands in LegacyTypeSpecifier.php with two new lines. Git shows a deletion and an addition; Cribelo shows the move and the two lines.">
+        <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="file" x="0" y="24" width="300" height="196" rx="14"/>
+        <text class="t m" x="20" y="50">TypeSpecifier.php</text>
+        <text class="s" x="20" y="68">git: 2,636 lines deleted</text>
+        <rect class="skip" x="20" y="86" width="180" height="6" rx="2"/>
+        <rect class="skip" x="20" y="96" width="220" height="6" rx="2"/>
+        <rect class="ln dash" x="14" y="110" width="272" height="94" rx="8" fill="none"/>
+        <rect class="ghost" x="20" y="120" width="200" height="6" rx="2"/>
+        <rect class="ghost" x="20" y="130" width="240" height="6" rx="2"/>
+        <rect class="ghost" x="20" y="140" width="160" height="6" rx="2"/>
+        <rect class="ghost" x="20" y="150" width="230" height="6" rx="2"/>
+        <rect class="ghost" x="20" y="160" width="190" height="6" rx="2"/>
+        <rect class="ghost" x="20" y="170" width="250" height="6" rx="2"/>
+        <rect class="ghost" x="20" y="180" width="140" height="6" rx="2"/>
+        <rect class="ghost" x="20" y="190" width="210" height="6" rx="2"/>
+        <path class="ln" d="M290 156C340 156 370 150 420 150" marker-end="url(#a2)" stroke-width="2"/>
+        <text class="s" x="355" y="140" text-anchor="middle">moved</text>
+        <rect class="file" x="430" y="24" width="330" height="196" rx="14"/>
+        <text class="t m" x="450" y="50">LegacyTypeSpecifier.php</text>
+        <text class="s" x="450" y="68">git: 2,636 lines added</text>
+        <rect class="skip" x="450" y="86" width="200" height="6" rx="2"/>
+        <rect class="skip" x="450" y="96" width="240" height="6" rx="2"/>
+        <rect class="skip" x="450" y="106" width="160" height="6" rx="2"/>
+        <rect class="skip" x="450" y="116" width="230" height="6" rx="2"/>
+        <rect class="read" x="450" y="126" width="210" height="6" rx="2"/>
+        <rect class="skip" x="450" y="136" width="190" height="6" rx="2"/>
+        <rect class="skip" x="450" y="146" width="250" height="6" rx="2"/>
+        <rect class="read" x="450" y="156" width="170" height="6" rx="2"/>
+        <rect class="skip" x="450" y="166" width="140" height="6" rx="2"/>
+        <rect class="skip" x="450" y="176" width="210" height="6" rx="2"/>
+        <text class="t" x="450" y="206">Cribelo: <tspan class="p">124 lines to read</tspan></text>
+      </svg>
+      </div>
+      <figcaption>A real split in phpstan. Git sees one deletion and one addition, no rename. Cribelo sees the functions that moved and the 124 lines that changed on the way.</figcaption>
+    </figure>
+
+    <h2 id="facts">2. Facts: what the diff does not show</h2>
+    <p>A fact is something the diff does not show and that a reader can check in a minute. Cribelo computes the import graph of the repository before and after the change and compares them, asks git for the history of each touched function, and reads your coverage report. None is a prediction. At most one fact of each kind per file.</p>
+    <figure>
+      <div class="scroll">
+      <svg viewBox="0 0 760 232" role="img" aria-label="Before the change, billing.go imports invoice.go, which imports tax.go. The change makes tax.go import billing.go, which closes a cycle.">
+        <defs>
+          <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker>
+          <marker id="a3p" class="pinkm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <text class="s" x="0" y="14">Before</text>
+        <rect class="box" x="100" y="30" width="130" height="36" rx="10"/><text class="t m" x="165" y="53" text-anchor="middle">billing.go</text>
+        <rect class="box" x="0" y="150" width="130" height="36" rx="10"/><text class="t m" x="65" y="173" text-anchor="middle">invoice.go</text>
+        <rect class="box" x="200" y="150" width="130" height="36" rx="10"/><text class="t m" x="265" y="173" text-anchor="middle">tax.go</text>
+        <path class="ln" d="M140 68L90 146" marker-end="url(#a3)"/>
+        <path class="ln" d="M132 168H196" marker-end="url(#a3)"/>
+        <text class="s" x="0" y="222">billing imports invoice, invoice imports tax</text>
+
+        <line x1="380" y1="0" x2="380" y2="232" stroke="var(--line)"/>
+
+        <text class="s" x="420" y="14">After the change</text>
+        <rect class="box" x="520" y="30" width="130" height="36" rx="10"/><text class="t m" x="585" y="53" text-anchor="middle">billing.go</text>
+        <rect class="box" x="420" y="150" width="130" height="36" rx="10"/><text class="t m" x="485" y="173" text-anchor="middle">invoice.go</text>
+        <rect class="box" x="620" y="150" width="130" height="36" rx="10"/><text class="t m" x="685" y="173" text-anchor="middle">tax.go</text>
+        <path class="ln" d="M560 68L510 146" marker-end="url(#a3)"/>
+        <path class="ln" d="M552 168H616" marker-end="url(#a3)"/>
+        <path class="ln new" d="M685 146L612 70" marker-end="url(#a3p)"/>
+        <text class="s p" x="640" y="100">new import</text>
+        <text class="t p" x="420" y="222">introduces a cycle: tax.go → billing.go → invoice.go → tax.go</text>
+      </svg>
+      </div>
+      <figcaption>The graph before the change is rebuilt from the base version of every changed file. Tests are left out of both graphs.</figcaption>
+    </figure>
+    <dl>
+      <dt>introduces a cycle</dt><dd>After the change, a new import of the file leads back to the file. A barrel (<code>index.ts</code>, <code>__init__.py</code>) re-exporting its directory and a Rust <code>mod name;</code> declaration do not count.</dd>
+      <dt>depends on a module for the first time</dt><dd>A directory imports a directory it never imported. A directory that did not exist before says nothing.</dd>
+      <dt>first use of a library</dt><dd>A package no file of the repository imported before. The standard library and the packages the repository defines itself do not count.</dd>
+      <dt>went from N to M parameters, called from N files</dt><dd>An exported function changed its signature. The files that call it are counted, so you know how far the change reaches.</dd>
+      <dt>new exported functions called nowhere yet</dt><dd>Exported functions the change adds and no other file calls.</dd>
+      <dt>similar to a function the change does not touch</dt><dd>A clone of a touched function, left as it was.</dd>
+      <dt>fixed N times in the past year</dt><dd><code>git log -L</code> on the lines of the function. A function fixed twice is worth a second look.</dd>
+      <dt>changed lines not run by any test</dt><dd>Read from the coverage report of your last test run: lcov, Cobertura, Clover or a Go profile.</dd>
+    </dl>
+
+    <h2 id="order">3. Order: how to read</h2>
+    <p>The files to read are grouped. Two files are in one group when one imports the other, or, in one directory, when one calls a function the other declares. Inside a group, a file comes before the files that use it: you read the definition before its uses, the rule of Baum and colleagues (2017). Each test comes right after the file it exercises. Groups carrying a cycle, a signature change or a fix record come first, then the best score, then size.</p>
+    <figure>
+      <div class="scroll">
+      <svg viewBox="0 0 760 248" role="img" aria-label="parser.go uses token.go and cli.go uses both. Reading order: token.go, its test, parser.go, cli.go.">
+        <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
+        <path class="ln" d="M665 74C665 14 95 14 95 72" marker-end="url(#a4)"/>
+        <text class="s" x="380" y="22" text-anchor="middle">uses</text>
+        <rect class="box" x="20" y="76" width="150" height="40" rx="10"/><text class="t m" x="95" y="101" text-anchor="middle">token.go</text>
+        <circle class="num" cx="20" cy="76" r="11"/><text class="numt" x="20" y="80">1</text>
+        <rect class="file dash" x="20" y="160" width="150" height="40" rx="10"/><text class="t m" x="95" y="185" text-anchor="middle">token_test.go</text>
+        <circle class="num" cx="20" cy="160" r="11"/><text class="numt" x="20" y="164">2</text>
+        <path class="ln dash" d="M95 158V120" marker-end="url(#a4)"/>
+        <rect class="box" x="305" y="76" width="150" height="40" rx="10"/><text class="t m" x="380" y="101" text-anchor="middle">parser.go</text>
+        <circle class="num" cx="305" cy="76" r="11"/><text class="numt" x="305" y="80">3</text>
+        <path class="ln" d="M303 96H176" marker-end="url(#a4)"/>
+        <text class="s" x="240" y="88" text-anchor="middle">uses</text>
+        <rect class="box" x="590" y="76" width="150" height="40" rx="10"/><text class="t m" x="665" y="101" text-anchor="middle">cli.go</text>
+        <circle class="num" cx="590" cy="76" r="11"/><text class="numt" x="590" y="80">4</text>
+        <path class="ln" d="M588 96H461" marker-end="url(#a4)"/>
+        <text class="s" x="525" y="88" text-anchor="middle">uses</text>
+        <text class="s" x="200" y="190">Read what is used before what uses it. A test follows its file.</text>
+      </svg>
+      </div>
+    </figure>
+
+    <h2 id="output">What you get</h2>
+    <p><code>cribelo</code> prints the plan in the terminal. <code>cribelo describe</code> prints the same in Markdown, ready for the pull request description. The GitHub Action posts one comment per pull request and updates it on each push. Here is the plan of <a href="https://github.com/ast-metrics/ast-metrics/pull/196">pull request #196 of AST Metrics</a>, trimmed to its first files.</p>
+<pre class="term"><span class="ps">$</span> cribelo
+<span class="head">cribelo</span> <span class="dim">· 34 files changed vs origin/main (merge-base b2f83dc)</span>
+
+<span class="head">Read 14 of 34 changed files, about 1 h 11.</span>
+1751 of 1771 changed lines to read: 11 import hunks.
+Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() complexity 17, +4 more, imported by 83 files.
+
+                                                          complexity  to read        used by    commits 90d        clone  tests
+      <span class="dim">↳ library_reach.go, then what uses it</span>
+   1  <span class="pa">internal/analyzer/library_reach.go</span>             new   ▮▮▮▯▯ 17    ▮▮▮▯▯ 266      ▮▮▮▮▮ 83   ▮▮▯▯▯ 3                   <span class="k0">✓</span>
+   2  <span class="pa">internal/analyzer/library_conformance_test.go</span>  test  ▮▮▮▯▯ 12    ▮▮▯▯▯ 144      ▯▯▯▯▯      ▮▯▯▯▯ 1
+   3  <span class="pa">internal/analyzer/library_reach_test.go</span>        test  ▮▯▯▯▯ 4     ▮▮▯▯▯ 146      ▯▯▯▯▯      ▮▯▯▯▯ 2
+   4  <span class="pa">internal/engine/util.go</span>                              ▮▮▯▯▯ 10    ▮▯▯▯▯ 32       ▮▮▮▮▮ 111  ▮▮▮▯▯ 6, <span class="bad">3 fixes</span>          <span class="bad">✗</span>
+   5  <span class="pa">internal/analyzer/file_dependency_analyzer.go</span>        ▮▮▮▮▮ 44    ▮▮▯▯▯ 67       ▮▮▮▮▮ 83   ▮▮▯▯▯ 4, <span class="bad">1 fix</span>            <span class="k0">✓</span>
+   6  <span class="pa">internal/engine/php/deps/resolver.go</span>           new   ▮▮▯▯▯ 9     ▮▮▯▯▯ 77       ▮▯▯▯▯ 1    ▮▯▯▯▯ 1            <span class="bad">84%</span>    <span class="k0">✓</span>
+   7  <span class="pa">internal/engine/php/deps/resolver_test.go</span>      test  ▮▯▯▯▯ 5     ▮▮▯▯▯ 57       ▯▯▯▯▯      ▮▯▯▯▯ 1
+   8  <span class="pa">internal/engine/java/deps/resolver.go</span>                ▮▮▮▯▯ 11    ▮▯▯▯▯ 17 of 18 ▮▯▯▯▯ 1    ▮▮▯▯▯ 3, <span class="bad">1 fix</span>     <span class="bad">100%</span>   <span class="k0">✓</span>
+      <span class="dim">… 6 more</span>
+
+<span class="head">Worth knowing</span>  <span class="dim">true by construction, not predicted</span>
+  cmd/ast-metrics/main.go  main() was fixed 5 times in the past year
+  internal/analyzer/aggregator.go  internal/analyzer depends on internal/engine/php/deps for the first time
+  internal/engine/typescript/deps/resolver.go  internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time
+
+<span class="head">Skip (20)</span>
+  ranked lower 9 · tests only 7 · no measurable change 4    <span class="dim">cribelo skip</span></pre>
+    <p>Each column is a measure you can check: cyclomatic complexity of the touched functions, lines to read out of lines changed, files that import this one, commits and fix commits in the last ninety days, similarity with another function, a test file next to it.</p>
+
+    <h2 id="measured">Measured</h2>
+    <p>Twenty-eight open-source repositories in seven languages, their last 2,500 landings each, replayed with <code>cribelo backtest</code>. The table says how many changed lines of code are left to read once the mechanical hunks are set aside, and how many files have nothing left to read at all.</p>
+    <table class="num">
+      <thead><tr><th>Language</th><th>Changed lines</th><th>Left to read</th><th>Files with nothing to read</th></tr></thead>
+      <tbody>
+        <tr><td>C#</td><td>1,815,314</td><td>94.9 %</td><td>14.0 %</td></tr>
+        <tr><td>Go</td><td>454,648</td><td>92.9 %</td><td>14.4 %</td></tr>
+        <tr><td>Java</td><td>416,045</td><td>84.6 %</td><td>20.3 %</td></tr>
+        <tr><td>PHP</td><td>816,824</td><td>92.8 %</td><td>5.3 %</td></tr>
+        <tr><td>Python</td><td>200,648</td><td>88.0 %</td><td>27.2 %</td></tr>
+        <tr><td>Rust</td><td>364,317</td><td>85.2 %</td><td>18.6 %</td></tr>
+        <tr><td>TypeScript</td><td>411,259</td><td>87.5 %</td><td>18.0 %</td></tr>
+        <tr><td>All</td><td>4,479,055</td><td>91.6 %</td><td>14.4 %</td></tr>
+      </tbody>
+    </table>
+    <p>On an ordinary month of pull requests, 8&nbsp;% of the changed lines and 14&nbsp;% of the files need no reading. The share climbs on the changes that drown a reviewer. In ruff, the pull request that splits <code>types/class.rs</code> changes 10,595 lines: 8,424 are moved, 3,678 are left to read, and git sees no rename. In phpstan, 2,636 lines land in <code>LegacyTypeSpecifier.php</code> and 124 are left to read.</p>
+
+    <h3>Facts, against what reviewers commented</h3>
+    <p>Four sets of 25 pull requests with human review comments, from prometheus, pydantic, cargo and vite, replayed at the commit of the first comment. 17&nbsp;% of the changed files received a comment. The table counts, for each kind of fact, how many of the files it was stated on received one.</p>
+    <table class="num">
+      <thead><tr><th>Fact</th><th>Files with the fact</th><th>Commented by a reviewer</th></tr></thead>
+      <tbody>
+        <tr><td>similar to an untouched function</td><td>5</td><td>4</td></tr>
+        <tr><td>fixed N times in the past year</td><td>32</td><td>17</td></tr>
+        <tr><td>new exported functions called nowhere</td><td>12</td><td>5</td></tr>
+        <tr><td>signature changed</td><td>44</td><td>14</td></tr>
+        <tr><td>introduces a cycle</td><td>7</td><td>2</td></tr>
+        <tr><td>depends on a module for the first time</td><td>11</td><td>2</td></tr>
+        <tr><td>first use of a library</td><td>3</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <p>Clone, fix history and unused API are far above the 17&nbsp;% base rate, signature above it. Cycle, dependency and library are facts about the structure; reviewers do not comment on them file by file, and they are not there to predict that.</p>
+
+    <h3>Reading order</h3>
+    <p>Share of the commented files among the first three files of the list: Cribelo 45&nbsp;%, alphabetical order 33&nbsp;%, largest files first 51&nbsp;%. The order of Cribelo puts the definition before its uses so that the reader understands what follows; this proxy does not measure understanding.</p>
+
+    <h3>Not measured</h3>
+    <ul>
+      <li>The reading time, twenty lines a minute, is a convention taken from RAID (Brito and Valente, 2021), not a measurement.</li>
+      <li>Hunk natures were checked by hand on samples in Python, Rust, TypeScript and Java. Not in C#.</li>
+      <li>Coverage facts were tested on fixtures only: no repository of the bench ships a coverage report at the replayed commit.</li>
+    </ul>
+
+    <h2 id="not">What it does not do</h2>
+    <p>Cribelo does not find bugs and never says a file is safe. It says what is left to read, what it knows for sure about the structure, and in which order to read. A score from ten signals (lines, complexity, coupling, fixes, churn, tests, clones) still ranks the files and sets the high, medium and low levels. Its weights are public, and <code>cribelo calibrate</code> learns them from your own history. Every rule, threshold and weight is in <a href="https://github.com/cribelo/cribelo/blob/main/docs/how-it-is-computed.md">docs/how-it-is-computed.md</a>.</p>
+  </main>
+
+  <footer>
+    <p><strong>The parsers</strong>, the complexity model and the dependency graph come from <a href="https://github.com/ast-metrics/ast-metrics">AST Metrics</a>. <strong>Move matching</strong> follows RefDiff (Silva and Valente, 2017); <strong>the reading order</strong> follows Baum, Schneider and Bacchelli (2017).</p>
+    <p>MIT license. Made by Jean-François Lépine, author of <a href="https://github.com/phpmetrics/PhpMetrics">PhpMetrics</a>. <em>Cribellum</em> is Latin for a small sieve.</p>
+  </footer>
+</div>
+</body>
+</html>
