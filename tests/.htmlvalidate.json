@@ -1,0 +1,8 @@
+{
+  "extends": ["html-validate:standard", "html-validate:a11y"],
+  "rules": {
+    "doctype-style": "off",
+    "no-inline-style": "off",
+    "no-trailing-whitespace": "off"
+  }
+}
