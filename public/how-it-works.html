@@ -23,14 +23,14 @@
 @font-face { font-family: "Geist Mono"; src: url(assets/fonts/geist-mono.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
 :root {
   --bg: #fff; --ink: #0d1117; --body: #48515c; --muted: #68717c; --faint: #8b949e; --soft: #f5f6f8; --line: #e3e6ea; --skip: #d4d9df;
-  --pink: #ec6f96; --pink-text: #b3245c; --tint: #fcf0f4;
+  --pink: #ec6f96; --pink-text: #b3245c; --tint: #fcf0f4; --chg: #a3abb5;
   --sans: Geist, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #0d1117; --ink: #f2f5f8; --body: #a4aeba; --muted: #848e9b; --faint: #6e7886; --soft: #151b23; --line: #262d37; --skip: #363f4b;
-    --pink: #ee7aa0; --pink-text: #ff9dbb; --tint: #1a1219;
+    --pink: #ee7aa0; --pink-text: #ff9dbb; --tint: #1a1219; --chg: #5d6773;
   }
 }
 * { box-sizing: border-box; }
@@ -113,6 +113,77 @@ svg marker.pinkm path { fill: var(--pink); }
 .pre { margin: 0 0 20px; padding: 18px 22px; overflow-x: auto; background: var(--soft); border-radius: 16px; color: var(--body); font: 13.5px/1.6 var(--mono); }
 .pre b { color: var(--pink-text); font-weight: 500; }
 
+h2[id] { scroll-margin-top: 24px; }
+figure { padding: 26px 26px 20px; border: 1px solid var(--line); border-radius: 20px; }
+figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
+.natures td:first-child::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 10px; border-radius: 3px; background: var(--skip); vertical-align: 1px; }
+.natures tr.r td:first-child::before { background: var(--pink); }
+.natures .cost { width: 28%; white-space: normal; }
+.facts div { transition: border-color .2s, transform .2s; }
+.facts div:hover { border-color: var(--pink); transform: translateY(-2px); }
+
+.toc { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; margin: 28px 0 0; padding: 0; font-size: 14.5px; }
+.toc a { padding: 6px 14px; border-radius: 99px; background: var(--soft); color: var(--ink); text-decoration: none; transition: background .15s, color .15s; }
+.toc a:hover { background: var(--pink); color: #fff; }
+
+.demo { --row: 84px; --gap: 10px; display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: 28px; margin: 40px 0 0; padding: 28px; border-radius: 24px; background: var(--tint); }
+.stack { position: relative; height: calc(4 * var(--row) + 3 * var(--gap)); }
+.card { position: absolute; top: 0; left: 0; right: 0; height: var(--row); display: grid; grid-template-columns: 26px minmax(0, 1fr) 32%; align-items: center; gap: 14px; padding: 0 18px 0 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; transform: translateY(calc(var(--y) * (var(--row) + var(--gap)))); transition: transform .8s cubic-bezier(.65, 0, .25, 1), opacity .5s; }
+.card[data-f=cli] { --y: 0; } .card[data-f=format] { --y: 1; } .card[data-f=parser] { --y: 2; } .card[data-f=token] { --y: 3; }
+.demo[data-step="3"] .card[data-f=token] { --y: 0; } .demo[data-step="3"] .card[data-f=parser] { --y: 1; }
+.demo[data-step="3"] .card[data-f=cli] { --y: 2; } .demo[data-step="3"] .card[data-f=format] { --y: 3; }
+.demo:not([data-step="0"]) .card[data-f=format] { opacity: .6; }
+.card .n { width: 24px; height: 24px; border-radius: 50%; background: var(--pink); color: #fff; font: 600 12px/24px var(--sans); text-align: center; transform: scale(0); transition: transform .4s cubic-bezier(.3, 1.6, .5, 1); }
+.card .n.x { width: auto; background: none; color: var(--muted); font-weight: 500; font-size: 11px; }
+.demo[data-step="3"] .card .n { transform: scale(1); transition-delay: .6s; }
+.meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.meta code { color: var(--ink); font-size: 14px; font-weight: 500; }
+.why, .tag { flex: none; max-height: 0; overflow: hidden; font-size: 12.5px; line-height: 1.4; white-space: nowrap; text-overflow: ellipsis; opacity: 0; transform: translateY(4px); transition: opacity .4s, transform .4s, max-height .4s, margin .4s; }
+.why { color: var(--muted); }
+.tag { align-self: flex-start; max-width: 100%; padding: 1px 9px; border-radius: 99px; background: var(--tint); color: var(--pink-text); font-weight: 500; }
+.demo:not([data-step="0"]) .why, .demo[data-step="2"] .tag, .demo[data-step="3"] .tag { max-height: 22px; opacity: 1; transform: none; }
+.demo[data-step="2"] .tag, .demo[data-step="3"] .tag { margin-top: 2px; }
+.lines { display: flex; flex-direction: column; gap: 3px; }
+.lines i { display: block; height: 4px; border-radius: 2px; background: var(--chg); transition: background .5s; }
+.lines i:nth-child(2) { transition-delay: .05s; } .lines i:nth-child(3) { transition-delay: .1s; } .lines i:nth-child(4) { transition-delay: .15s; }
+.lines i:nth-child(5) { transition-delay: .2s; } .lines i:nth-child(6) { transition-delay: .25s; } .lines i:nth-child(7) { transition-delay: .3s; } .lines i:nth-child(8) { transition-delay: .35s; }
+.demo:not([data-step="0"]) .lines .m { background: var(--skip); }
+.demo:not([data-step="0"]) .lines .r { background: var(--pink); }
+.sum { margin: 16px 0 0; color: var(--body); font-size: 15px; }
+.sum b { color: var(--pink-text); font-size: 1.25em; font-weight: 600; letter-spacing: -.02em; }
+.sum span { display: none; }
+.demo[data-step="0"] .s0, .demo[data-step="1"] .s1, .demo[data-step="2"] .s1, .demo[data-step="3"] .s3 { display: inline; }
+.steps { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.steps li { margin: 0; }
+.steps button { position: relative; display: block; width: 100%; padding: 11px 14px 14px; overflow: hidden; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .2s; }
+.steps button:hover { background: color-mix(in srgb, var(--bg) 50%, transparent); }
+.steps b { display: block; color: var(--muted); font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.steps span { display: block; margin-top: 2px; color: var(--faint); font-size: 13.5px; line-height: 1.4; }
+.steps .on button { background: var(--bg); }
+.steps .on b { color: var(--ink); }
+.steps .on span { color: var(--body); }
+.steps button::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 6px; height: 2px; border-radius: 1px; background: var(--pink); transform: scaleX(0); transform-origin: left; }
+.demo.play .steps .on button::after { animation: fill var(--d) linear forwards; }
+.demo.hold .steps .on button::after { animation-play-state: paused; }
+@keyframes fill { to { transform: scaleX(1); } }
+.cap { display: none; }
+@media (max-width: 680px) {
+  .demo { --row: 76px; grid-template-columns: 1fr; gap: 18px; padding: 16px; border-radius: 20px; }
+  .card { grid-template-columns: 22px minmax(0, 1fr) 20%; gap: 10px; padding: 0 12px 0 10px; }
+  .why, .tag { font-size: 12px; }
+  .tag { padding: 1px 7px; }
+  .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); order: -1; gap: 4px; }
+  .steps button { padding: 9px 4px 12px; text-align: center; }
+  .steps b { font-size: 13.5px; }
+  .steps span { display: none; }
+  .steps button::after { left: 8px; right: 8px; }
+  .cap { display: block; order: -1; min-height: 3em; margin: 0; color: var(--body); font-size: 15px; }
+  figure { padding: 16px 16px 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card, .card .n, .why, .tag, .lines i { transition: none; }
+}
+
 footer { padding: 28px 0 44px; color: var(--muted); font-size: 14px; }
 footer p { margin-bottom: 6px; max-width: 48em; }
 footer strong { color: var(--body); font-weight: 500; }
@@ -129,6 +200,8 @@ footer strong { color: var(--body); font-weight: 500; }
   .natures td { border: 0; padding: 0 0 4px; }
   .natures td:first-child { font-size: 16px; }
   .cost { white-space: normal; }
+  .num th:not(:first-child) { white-space: normal; }
+  .num th, .num td { padding-right: 8px; }
 }
 </style>
 </head>
@@ -148,7 +221,46 @@ footer strong { color: var(--body); font-weight: 500; }
       <marker id="arp" class="pinkm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker>
     </defs></svg>
     <h1>How Cribelo works</h1>
-    <p class="lede">Cribelo reads the diff of a branch and draws its reading map: the lines that still need a human once moves, renames, formatting and imports are set aside, the facts about the structure that the diff does not show, and the order to read the files in. There is no model behind it, so the same change gives the same answer on every machine.</p>
+    <p class="lede">Cribelo reads the diff of a branch and gives back three things: the lines that still need a human, the facts the diff does not show, and the order to read the files in. No model runs behind it, so the same change gets the same answer on every machine.</p>
+
+    <div class="demo" id="demo" data-step="3" role="group" aria-label="Cribelo on a change of four files, step by step">
+      <div>
+        <div class="stack">
+          <div class="card" data-f="cli">
+            <span class="n">3</span>
+            <div class="meta"><code>cli.go</code><span class="why">imports, a move: 4 set aside</span></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="width:46%"></i><i class="m" style="width:62%"></i><i class="m" style="width:80%"></i><i class="m" style="width:54%"></i><i class="r" style="width:90%"></i><i class="r" style="width:70%"></i><i class="r" style="width:40%"></i></div>
+          </div>
+          <div class="card" data-f="format">
+            <span class="n x">skip</span>
+            <div class="meta"><code>format.go</code><span class="why">formatting only</span></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="width:72%"></i><i class="m" style="width:50%"></i><i class="m" style="width:86%"></i><i class="m" style="width:64%"></i><i class="m" style="width:44%"></i><i class="m" style="width:78%"></i></div>
+          </div>
+          <div class="card" data-f="parser">
+            <span class="n">2</span>
+            <div class="meta"><code>parser.go</code><span class="why">a rename: 2 set aside</span><span class="tag">fixed 3 times this year</span></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="width:58%"></i><i class="m" style="width:74%"></i><i class="r" style="width:88%"></i><i class="r" style="width:66%"></i><i class="r" style="width:94%"></i><i class="r" style="width:52%"></i><i class="r" style="width:80%"></i><i class="r" style="width:36%"></i></div>
+          </div>
+          <div class="card" data-f="token">
+            <span class="n">1</span>
+            <div class="meta"><code>token.go</code><span class="why">a move: 3 set aside</span><span class="tag">2 → 3 parameters, 4 callers</span></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="width:68%"></i><i class="m" style="width:84%"></i><i class="m" style="width:56%"></i><i class="r" style="width:76%"></i><i class="r" style="width:92%"></i><i class="r" style="width:60%"></i><i class="r" style="width:42%"></i></div>
+          </div>
+        </div>
+        <p class="sum"><span class="s0"><b>28</b> changed lines in 4 files</span><span class="s1"><b>13</b> of 28 lines left to read</span><span class="s3"><b>13</b> of 28 lines, 3 of 4 files, token.go first</span></p>
+      </div>
+      <ol class="steps">
+        <li style="--d:2.4s"><button type="button"><b>The diff</b><span>Four files, 28 changed lines. Git shows them all alike.</span></button></li>
+        <li style="--d:3.6s"><button type="button"><b>Hunks</b><span>Moves, renames, formatting and imports are set aside. 13 lines are left.</span></button></li>
+        <li style="--d:3.6s"><button type="button"><b>Facts</b><span>What the diff hides: a function repaired three times this year, a signature four files call.</span></button></li>
+        <li class="on" style="--d:5s"><button type="button"><b>Order</b><span>Definitions before their uses. You start with token.go.</span></button></li>
+      </ol>
+      <p class="cap" aria-live="polite"></p>
+    </div>
+
+    <nav class="toc" aria-label="On this page">
+      <a href="#hunks">Hunks</a><a href="#facts">Facts</a><a href="#order">Order</a><a href="#output">The plan</a><a href="#measured">Measured</a><a href="#not">Limits</a>
+    </nav>
 
     <h2 id="passes">From the diff to the plan</h2>
     <p>The change is the diff between the merge base of your branch and your working tree. Generated files, lock files and binaries are set aside. The rest is parsed before and after the change with the tree-sitter parsers of AST Metrics, then goes through three passes.</p>
@@ -186,7 +298,7 @@ footer strong { color: var(--body); font-weight: 500; }
         <tr><td>format</td><td>Same tokens, whitespace aside.</td><td class="cost">nothing</td></tr>
         <tr><td>comment</td><td>Only comments differ.</td><td class="cost">nothing</td></tr>
         <tr><td>imports</td><td>Import statements only.</td><td class="cost">nothing</td></tr>
-        <tr><td>behavior</td><td>Everything else.</td><td class="cost">every code line: blank, comment and import lines are not counted</td></tr>
+        <tr class="r"><td>behavior</td><td>Everything else.</td><td class="cost">every code line: blank, comment and import lines are not counted</td></tr>
       </tbody>
     </table>
     <figure>
@@ -563,5 +675,31 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     <p>MIT license. Made by Jean-François Lépine, author of <a href="https://github.com/phpmetrics/PhpMetrics">PhpMetrics</a>. <em>Cribellum</em> is Latin for a small sieve.</p>
   </footer>
 </div>
+<script>
+(() => {
+  const d = document.getElementById('demo');
+  if (!d) return;
+  const items = [...d.querySelectorAll('.steps li')];
+  const cap = d.querySelector('.cap');
+  const set = i => {
+    d.dataset.step = i;
+    items.forEach((li, k) => {
+      li.classList.toggle('on', k === i);
+      li.querySelector('button').setAttribute('aria-pressed', k === i);
+    });
+    cap.textContent = items[i].querySelector('span').textContent;
+  };
+  items.forEach((li, k) => li.querySelector('button').addEventListener('click', () => set(k)));
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { set(3); return; }
+  const hold = on => d.classList.toggle('hold', on);
+  d.addEventListener('pointerenter', e => e.pointerType === 'mouse' && hold(true));
+  d.addEventListener('pointerleave', () => hold(false));
+  d.addEventListener('focusin', e => e.target.matches(':focus-visible') && hold(true));
+  d.addEventListener('focusout', () => hold(false));
+  d.addEventListener('animationend', e => { if (e.animationName === 'fill') set((+d.dataset.step + 1) % items.length); });
+  d.classList.add('play');
+  set(0);
+})();
+</script>
 </body>
 </html>
