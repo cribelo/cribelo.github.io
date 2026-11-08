@@ -148,35 +148,35 @@ footer strong { color: var(--body); font-weight: 500; }
       <marker id="arp" class="pinkm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker>
     </defs></svg>
     <h1>How Cribelo works</h1>
-    <p class="lede">Cribelo reads the diff of a branch and draws its reading map: the lines that still need a human once moves, renames, formatting and imports are set aside, the facts about the structure that the diff does not show, and the order to read the files in. No model. Same change, same answer, on every machine.</p>
+    <p class="lede">Cribelo reads the diff of a branch and draws its reading map: the lines that still need a human once moves, renames, formatting and imports are set aside, the facts about the structure that the diff does not show, and the order to read the files in. There is no model behind it, so the same change gives the same answer on every machine.</p>
 
-    <h2 id="passes">One change, three passes</h2>
+    <h2 id="passes">From the diff to the plan</h2>
     <p>The change is the diff between the merge base of your branch and your working tree. Generated files, lock files and binaries are set aside. The rest is parsed before and after the change with the tree-sitter parsers of AST Metrics, then goes through three passes.</p>
     <figure>
       <div class="scroll">
-      <svg viewBox="0 0 760 112" role="img" aria-label="The diff goes through three passes: hunks, facts, order.">
+      <svg viewBox="0 0 760 112" role="img" aria-label="The diff goes through three passes: hunks, then facts, then order.">
         <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
         <rect class="box" x="0" y="18" width="150" height="76" rx="14"/>
         <text class="t" x="75" y="52" text-anchor="middle">The diff</text>
         <text class="s" x="75" y="72" text-anchor="middle">merge base to your tree</text>
         <path class="ln" d="M152 56H196" marker-end="url(#a1)"/>
         <rect class="box" x="200" y="18" width="160" height="76" rx="14"/>
-        <text class="t" x="280" y="52" text-anchor="middle">1. Hunks</text>
+        <text class="t" x="280" y="52" text-anchor="middle">Hunks</text>
         <text class="s" x="280" y="72" text-anchor="middle">what is left to read</text>
         <path class="ln" d="M362 56H396" marker-end="url(#a1)"/>
         <rect class="box" x="400" y="18" width="160" height="76" rx="14"/>
-        <text class="t" x="480" y="52" text-anchor="middle">2. Facts</text>
+        <text class="t" x="480" y="52" text-anchor="middle">Facts</text>
         <text class="s" x="480" y="72" text-anchor="middle">what the diff hides</text>
         <path class="ln" d="M562 56H596" marker-end="url(#a1)"/>
         <rect class="box" x="600" y="18" width="160" height="76" rx="14"/>
-        <text class="t" x="680" y="52" text-anchor="middle">3. Order</text>
+        <text class="t" x="680" y="52" text-anchor="middle">Order</text>
         <text class="s" x="680" y="72" text-anchor="middle">how to read it</text>
       </svg>
       </div>
     </figure>
 
-    <h2 id="hunks">1. Hunks: what is left to read</h2>
-    <p>Every hunk of the diff gets one nature. The first rule that applies wins, and the nature sets how many lines you read.</p>
+    <h2 id="hunks">Hunks</h2>
+    <p>The first pass decides what is left to read. Every hunk of the diff gets one nature. The first rule that applies wins, and the nature sets how many lines you read.</p>
     <table class="natures">
       <thead><tr><th>Nature</th><th>Rule</th><th>You read</th></tr></thead>
       <tbody>
@@ -281,8 +281,8 @@ footer strong { color: var(--body); font-weight: 500; }
       <figcaption>A real split in phpstan. Git sees one deletion and one addition, no rename. Cribelo sees the functions that moved and the 124 lines that changed on the way.</figcaption>
     </figure>
 
-    <h2 id="facts">2. Facts: what the diff does not show</h2>
-    <p>A fact is something the diff does not show and that a reader can check in a minute. Cribelo computes the import graph of the repository before and after the change and compares them, asks git for the history of each touched function, and reads your coverage report. None is a prediction. At most one fact of each kind per file.</p>
+    <h2 id="facts">Facts</h2>
+    <p>The second pass looks for what the diff does not show. A fact is something a reader can check in a minute. Cribelo computes the import graph of the repository before and after the change and compares them, asks git for the history of each touched function, and reads your coverage report. None is a prediction. At most one fact of each kind per file.</p>
     <figure>
       <div class="scroll">
       <svg viewBox="0 0 760 232" role="img" aria-label="Before the change, billing.go imports invoice.go, which imports tax.go. The change makes tax.go import billing.go, which closes a cycle.">
@@ -354,7 +354,7 @@ footer strong { color: var(--body); font-weight: 500; }
           <rect class="box" x="40" y="18" width="90" height="24" rx="6"/><text class="s m" x="85" y="34" text-anchor="middle">export fn</text>
         </svg>
         <h4>new exported functions called nowhere yet</h4>
-        <p>Exported functions the change adds and no other file calls. Dead on arrival, or an API that is not wired yet.</p>
+        <p>Exported functions the change adds and no other file calls yet: either the callers come in a later change, or the function is dead on arrival.</p>
       </div>
       <div>
         <svg viewBox="0 0 132 60" aria-hidden="true">
@@ -386,8 +386,8 @@ footer strong { color: var(--body); font-weight: 500; }
       </div>
     </div>
 
-    <h2 id="order">3. Order: how to read</h2>
-    <p>The files to read are grouped. Two files are in one group when one imports the other, or, in one directory, when one calls a function the other declares. Inside a group, a file comes before the files that use it: you read the definition before its uses, the rule of Baum and colleagues (2017). Each test comes right after the file it exercises, and a test that sits next to changed code is matched in its own directory only. Groups carrying a cycle, a signature change, a fix record, a first dependency or a clone come first, then the best score, then size.</p>
+    <h2 id="order">Order</h2>
+    <p>The third pass puts the files in reading order. The files to read are grouped. Two files are in one group when one imports the other, or, in one directory, when one calls a function the other declares. Inside a group, a file comes before the files that use it: you read the definition before its uses, the rule of Baum and colleagues (2017). Each test comes right after the file it exercises, and a test that sits next to changed code is matched in its own directory only. Groups carrying a cycle, a signature change, a fix record, a first dependency or a clone come first, then the best score, then size.</p>
     <figure>
       <div class="scroll">
       <svg viewBox="0 0 760 248" role="img" aria-label="parser.go uses token.go and cli.go uses both. Reading order: token.go, its test, parser.go, cli.go.">
@@ -411,15 +411,15 @@ footer strong { color: var(--body); font-weight: 500; }
       </svg>
       </div>
     </figure>
-    <h3>Who decides what</h3>
-    <p>Four things shape the plan, in this order. Each one settles only what the previous ones left open.</p>
+    <h3>Where the score comes in</h3>
+    <p>Four things shape the plan. Each one settles only what the previous ones left open, and the score comes last.</p>
     <ol class="ladder">
       <li><b>Natures</b><span>What is read at all, and how many lines of each hunk. A file whose hunks are all mechanical never enters the list, whatever its score.</span></li>
       <li><b>Facts</b><span>Which group comes first: a cycle, a signature change, a fix record, a first dependency or a clone pulls its group to the top.</span></li>
       <li><b>Dependencies</b><span>The order inside a group: the definition before its uses, each test right after the file it exercises.</span></li>
       <li><b>Score</b><span>What is left: which files fit a budget, the tie between two groups, and the high, medium and low levels of the gate. Ten public signals, weights you can recalibrate on your own history.</span></li>
     </ol>
-    <h3>With a budget</h3>
+    <h3>Under a budget</h3>
     <p><code>cribelo --budget 30m</code> fills the time with the best-ranked files first, at twenty lines a minute, and adds a test only while it fits. What does not fit is listed under Skip as ranked lower, with everything it knows about it.</p>
     <figure>
       <div class="scroll">
@@ -438,7 +438,7 @@ footer strong { color: var(--body); font-weight: 500; }
       </div>
     </figure>
 
-    <h2 id="output">What you get</h2>
+    <h2 id="output">The plan</h2>
     <p><code>cribelo</code> prints the plan in the terminal. <code>cribelo describe</code> prints the same in Markdown, ready for the pull request description. The GitHub Action posts one comment per pull request and updates it on each push. Here is the plan of <a href="https://github.com/ast-metrics/ast-metrics/pull/196">pull request #196 of AST Metrics</a>, trimmed to its first files.</p>
 <pre class="term"><span class="ps">$</span> cribelo
 <span class="head">cribelo</span> <span class="dim">· 34 files changed vs origin/main (merge-base b2f83dc)</span>
@@ -468,7 +468,7 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
   ranked lower 9 · tests only 7 · no measurable change 4    <span class="dim">cribelo skip</span></pre>
     <p>Each column is a measure you can check: cyclomatic complexity of the touched functions, lines to read out of lines changed, files that import this one, commits and fix commits in the last ninety days, similarity with another function, a test file next to it.</p>
 
-    <h2 id="measured">Measured</h2>
+    <h2 id="measured">On twenty-eight repositories</h2>
     <p>Twenty-eight open-source repositories in seven languages, their last 2,500 landings each, replayed with <code>cribelo backtest</code>. The table says how many changed lines of code are left to read once the mechanical hunks are set aside, and how many files have nothing left to read at all.</p>
     <table class="num">
       <thead><tr><th>Language</th><th>Changed lines</th><th>Left to read</th><th>Files with nothing to read</th></tr></thead>
@@ -485,7 +485,7 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     </table>
     <p>On an ordinary month of pull requests, 8&nbsp;% of the changed lines and 14&nbsp;% of the files need no reading. The share climbs on the changes that drown a reviewer. In ruff, the pull request that splits <code>types/class.rs</code> changes 10,595 lines: 8,424 are moved, 3,678 are left to read, and git sees no rename. In phpstan, 2,636 lines land in <code>LegacyTypeSpecifier.php</code> and 124 are left to read.</p>
 
-    <h3>Facts, against what reviewers commented</h3>
+    <h3>Facts and reviewer comments</h3>
     <p>Four sets of 25 pull requests with human review comments, from prometheus, pydantic, cargo and vite, replayed at the commit of the first comment. 17&nbsp;% of the changed files received a comment. The table counts, for each kind of fact, how many of the files it was stated on received one.</p>
     <table class="num">
       <thead><tr><th>Fact</th><th>Files with the fact</th><th>Commented by a reviewer</th></tr></thead>
@@ -511,7 +511,7 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
       <li>Coverage facts were tested on fixtures and on one real run (AST Metrics pull request #196 with its Go profile): no repository of the bench ships a coverage report at the replayed commit.</li>
     </ul>
 
-    <h2 id="not">What it does not do</h2>
+    <h2 id="not">Limits</h2>
     <p>Cribelo does not find bugs and never says a file is safe. It says what is left to read, what it knows for sure about the structure, and in which order to read. It does not know your layering rules either: a dependency from the domain to the infrastructure is a first dependency like any other. The score that settles the budget and the gate comes from ten signals (lines, complexity, coupling, fixes, churn, tests, clones); its weights are public, and <code>cribelo calibrate</code> learns them from your own history. Every rule, threshold and weight is in <a href="https://github.com/cribelo/cribelo/blob/main/docs/how-it-is-computed.md">docs/how-it-is-computed.md</a>.</p>
   </main>
 
