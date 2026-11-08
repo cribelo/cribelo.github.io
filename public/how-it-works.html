@@ -640,6 +640,22 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     </table>
     <p>On an ordinary month of pull requests, 8&nbsp;% of the changed lines and 14&nbsp;% of the files need no reading. The share climbs on the changes that drown a reviewer. In ruff, the pull request that splits <code>types/class.rs</code> changes 10,595 lines: 8,424 are moved, 3,678 are left to read, and git sees no rename. In phpstan, 2,636 lines land in <code>LegacyTypeSpecifier.php</code> and 124 are left to read.</p>
 
+    <h3>Read closely or glance at, function by function</h3>
+    <p>The same repositories, their last 1,500 landings, replayed function by function, with the lines a later fix repaired as the label (SZZ). 130,998 touched functions, 2,549 of them repaired later. The table reads: among the functions that gained no decision and ended at complexity 2 or below, 1.2&nbsp;% were repaired; among those that gained three decisions or more and ended above 10, 7.3&nbsp;%.</p>
+    <table class="num">
+      <thead><tr><th>Decisions gained</th><th>Complexity after</th><th>Share of lines</th><th>Functions repaired later</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>1 or 2</td><td>50.2 %</td><td>1.2 %</td></tr>
+        <tr><td>0</td><td>3 to 5</td><td>5.3 %</td><td>1.7 %</td></tr>
+        <tr><td>0</td><td>6 or more</td><td>9.8 %</td><td>1.9 %</td></tr>
+        <tr><td>1 or 2</td><td>any</td><td>12.7 %</td><td>2.9 %</td></tr>
+        <tr><td>3 or more</td><td>3 to 5</td><td>5.2 %</td><td>4.0 %</td></tr>
+        <tr><td>3 or more</td><td>6 to 10</td><td>6.7 %</td><td>4.5 %</td></tr>
+        <tr><td>3 or more</td><td>11 or more</td><td>10.0 %</td><td>7.3 %</td></tr>
+      </tbody>
+    </table>
+    <p>The rule Cribelo ships, no decision gained and complexity 3 or below after the change, glances at 52&nbsp;% of the lines inside touched functions. The functions it glances at were repaired 1.3&nbsp;% of the time, the ones it reads closely 2.8&nbsp;%. A third of the functions repaired later sit in the glanced half, which is why a glance is a fast read and never a skip. The reach of a file did not help: functions in files no other file imports were repaired 2.5&nbsp;% of the time, functions in files imported by twenty or more 1.4&nbsp;%. A test touched in the same change made no difference either, 2.1&nbsp;% against 1.9&nbsp;%. With the lines outside any function, the glanced share of a change runs from a third in caddy and the GitHub CLI to nine tenths in spring-boot and bitwarden.</p>
+
     <h3>Facts and reviewer comments</h3>
     <p>Four sets of 25 pull requests with human review comments, from prometheus, pydantic, cargo and vite, replayed at the commit of the first comment. 17&nbsp;% of the changed files received a comment. The table counts, for each kind of fact, how many of the files it was stated on received one.</p>
     <table class="num">
