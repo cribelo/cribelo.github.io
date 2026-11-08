@@ -135,40 +135,48 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .demo:not([data-step="0"]) .src i { background: var(--pink); }
 .src span { display: none; }
 .demo[data-step="0"] .src .g, .demo:not([data-step="0"]) .src .c { display: inline; }
-.lead { display: grid; margin: 14px 0 22px; color: var(--ink); font-size: clamp(1.15rem, 2.3vw, 1.5rem); font-weight: 600; letter-spacing: -.03em; line-height: 1.22; text-wrap: balance; }
-.lead span { grid-area: 1 / 1; max-width: 28em; opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .45s, transform .45s, visibility 0s .45s; }
+.lead { display: grid; margin: 16px 0 22px; color: var(--ink); font-size: clamp(1.2rem, 2.4vw, 1.6rem); font-weight: 600; letter-spacing: -.03em; line-height: 1.2; text-wrap: balance; }
+.lead span { grid-area: 1 / 1; max-width: 26em; opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .45s, transform .45s, visibility 0s .45s; }
 .lead b { color: var(--pink-text); font-weight: 600; }
-.lead code { padding: 0; background: none; color: inherit; font-size: .9em; font-weight: 500; }
+.lead code { padding: 0; background: none; color: inherit; font-size: .88em; font-weight: 500; }
 .demo[data-step="0"] .l0, .demo[data-step="1"] .l1, .demo[data-step="2"] .l2, .demo[data-step="3"] .l3, .demo[data-step="4"]:not(.end) .l4, .demo.end .l5 { opacity: 1; visibility: visible; transform: none; transition-delay: .15s, .15s, 0s; }
-.files { --row: 80px; --gap: 10px; position: relative; height: calc(4 * var(--row) + 3 * var(--gap)); }
-.file { --in: 18px; position: absolute; top: 0; left: 0; right: 0; height: var(--row); display: grid; grid-template-columns: 26px minmax(0, 1fr) 44%; align-items: center; gap: 16px; padding: 0 18px 0 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; opacity: 0; transform: translateY(calc(var(--y) * (var(--row) + var(--gap)) + var(--in))); transition: transform .85s cubic-bezier(.65, 0, .25, 1), opacity .5s, background .5s, border-color .5s; }
+.sheet { --h: 150px; --gap: 8px; position: relative; height: calc(4 * var(--h) + 3 * var(--gap)); }
+.file { --in: 18px; position: absolute; top: 0; left: 0; right: 0; height: var(--h); padding: 10px 16px 8px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 2px rgba(13, 17, 23, .04); opacity: 0; transform: translateY(calc(var(--y) * (var(--h) + var(--gap)) + var(--in))); transition: transform .85s cubic-bezier(.65, 0, .25, 1), opacity .5s, background .5s, border-color .5s; }
 .file.in { --in: 0px; opacity: 1; }
 .file[data-f=cli] { --y: 0; } .file[data-f=format] { --y: 1; } .file[data-f=parser] { --y: 2; } .file[data-f=token] { --y: 3; }
 .demo[data-step="4"] .file[data-f=token] { --y: 0; } .demo[data-step="4"] .file[data-f=parser] { --y: 1; }
 .demo[data-step="4"] .file[data-f=cli] { --y: 2; } .demo[data-step="4"] .file[data-f=format] { --y: 3; }
-.demo:not([data-step="0"]) .file[data-f=format] { background: var(--soft); border-color: transparent; }
-.demo:not([data-step="0"]) .file[data-f=format] .lines { opacity: .55; }
-.file .n { width: 24px; height: 24px; border-radius: 50%; background: var(--pink); color: #fff; font: 600 12px/24px var(--sans); text-align: center; transform: scale(0); transition: transform .4s cubic-bezier(.3, 1.6, .5, 1); }
-.file .n.x { width: auto; background: none; color: var(--muted); font-weight: 500; font-size: 11px; }
-.demo[data-step="4"] .file .n { transform: scale(1); transition-delay: .65s; }
-.demo:not([data-step="0"]) .file .n.x { transform: scale(1); transition-delay: .3s; }
-.meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.meta code { color: var(--ink); font-size: 14px; font-weight: 500; }
-.why { display: grid; min-height: 0; color: var(--muted); font-size: 12.5px; line-height: 1.4; max-height: 0; opacity: 0; transition: max-height .4s, opacity .4s; }
-.why span { grid-area: 1 / 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0; transition: opacity .35s; }
-.demo:not([data-step="0"]) .why { max-height: 20px; opacity: 1; }
-.demo[data-step="1"] .why .w1, .demo[data-step="2"] .why .w2, .demo[data-step="3"] .why .w2, .demo[data-step="4"] .why .w2 { opacity: 1; }
-.tag { align-self: flex-start; max-width: 100%; max-height: 0; padding: 0 9px; overflow: hidden; border-radius: 99px; background: var(--tint); color: var(--pink-text); font-size: 12.5px; font-weight: 500; line-height: 20px; white-space: nowrap; text-overflow: ellipsis; opacity: 0; transform: scale(.85); transform-origin: left center; transition: opacity .35s, transform .45s cubic-bezier(.3, 1.5, .5, 1), max-height .35s, margin .35s; }
-.demo[data-step="3"] .tag, .demo[data-step="4"] .tag { max-height: 20px; margin-top: 3px; opacity: 1; transform: none; }
-.lines { display: flex; flex-direction: column; justify-content: center; gap: 4px; transition: opacity .5s; }
-.lines i { display: block; width: 0; height: 5px; border-radius: 3px; background: var(--chg); transition: width .7s cubic-bezier(.2, .7, .2, 1), background .5s, height .5s; }
-.file.in .lines i { width: var(--w); }
-.lines i:nth-child(2) { transition-delay: .06s; } .lines i:nth-child(3) { transition-delay: .12s; } .lines i:nth-child(4) { transition-delay: .18s; }
-.lines i:nth-child(5) { transition-delay: .24s; } .lines i:nth-child(6) { transition-delay: .3s; } .lines i:nth-child(7) { transition-delay: .36s; } .lines i:nth-child(8) { transition-delay: .42s; }
-.demo:not([data-step="0"]) .lines .m { height: 3px; background: var(--skip); }
-.demo:not([data-step="0"]) .lines .r, .demo[data-step="1"] .lines .g { background: var(--pink); }
-.demo[data-step="2"] .lines .g, .demo[data-step="3"] .lines .g, .demo[data-step="4"] .lines .g { background: var(--glance); }
-.key { display: flex; flex-wrap: wrap; gap: 8px 18px; min-height: 1.6em; margin: 20px 0 0; padding: 0; list-style: none; color: var(--body); font-size: 13.5px; }
+.demo:not([data-step="0"]) .file[data-f=format] { background: var(--soft); border-color: transparent; box-shadow: none; }
+.demo:not([data-step="0"]) .file[data-f=format] .ln .t { opacity: .6; }
+.head { display: flex; align-items: center; gap: 10px; height: 24px; margin-bottom: 6px; }
+.head code { color: var(--ink); font-size: 13.5px; font-weight: 500; }
+.n { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--pink); color: #fff; font: 600 11.5px/22px var(--sans); text-align: center; transform: scale(0); transition: transform .4s cubic-bezier(.3, 1.6, .5, 1); }
+.n.x { width: auto; padding: 0 2px; background: none; color: var(--muted); font-weight: 500; font-size: 11px; }
+.demo[data-step="4"] .n { transform: scale(1); transition-delay: .65s; }
+.demo:not([data-step="0"]) .n.x { transform: scale(1); transition-delay: .3s; }
+.demo[data-step="0"] .head { padding-left: 32px; }
+.demo:not([data-step="0"]) .head { padding-left: 0; }
+.head { transition: padding .5s; }
+.tag { max-width: 60%; margin-left: auto; padding: 0 9px; overflow: hidden; border-radius: 99px; background: var(--tint); color: var(--pink-text); font-size: 12px; font-weight: 500; line-height: 20px; white-space: nowrap; text-overflow: ellipsis; opacity: 0; transform: scale(.8); transform-origin: right center; transition: opacity .35s, transform .45s cubic-bezier(.3, 1.5, .5, 1); }
+.demo[data-step="3"] .tag, .demo[data-step="4"] .tag { opacity: 1; transform: none; }
+.ln { display: grid; grid-template-columns: 22px 6px minmax(0, 1fr) 38%; align-items: center; gap: 0 8px; height: 14px; color: var(--muted); font: 400 10px/1 var(--mono); transition: opacity .5s; }
+.ln u { text-decoration: none; text-align: right; }
+.ln i { display: block; height: 10px; border-radius: 2px; background: var(--chg); transition: background .5s, height .5s, opacity .5s; }
+.ln .t { display: flex; gap: 5px; padding-left: calc(var(--i, 0) * 10px); transition: opacity .5s; }
+.ln .t b { display: block; width: var(--w); height: 6px; border-radius: 3px; background: var(--chg); transform: scaleX(0); transform-origin: left; transition: transform .55s cubic-bezier(.2, .7, .2, 1), background .5s, height .5s; }
+.file.in .ln .t b { transform: none; }
+.ln:nth-child(2) .t b { transition-delay: .05s; } .ln:nth-child(3) .t b { transition-delay: .1s; } .ln:nth-child(4) .t b { transition-delay: .15s; }
+.ln:nth-child(5) .t b { transition-delay: .2s; } .ln:nth-child(6) .t b { transition-delay: .25s; } .ln:nth-child(7) .t b { transition-delay: .3s; } .ln:nth-child(8) .t b { transition-delay: .35s; }
+.ln em { justify-self: start; display: inline-flex; align-items: center; gap: 5px; max-width: 100%; overflow: hidden; color: var(--muted); font: 500 11px/1.2 var(--sans); white-space: nowrap; text-overflow: ellipsis; opacity: 0; transform: translateX(-4px); transition: opacity .4s, transform .4s; }
+.ln em::before { content: ""; flex: none; width: 10px; height: 3px; border-radius: 2px; background: var(--skip); }
+.ln.g em::before { background: var(--glance); } .ln.r em::before { background: var(--pink); }
+.ln.r em { color: var(--pink-text); }
+.demo:not([data-step="0"]) .ln.m em, .demo[data-step="2"] .ln.g em, .demo[data-step="3"] .ln.g em, .demo[data-step="4"] .ln.g em, .demo[data-step="2"] .ln.r em, .demo[data-step="3"] .ln.r em, .demo[data-step="4"] .ln.r em { opacity: 1; transform: none; }
+.demo:not([data-step="0"]) .ln.m i { opacity: 0; }
+.demo:not([data-step="0"]) .ln.m .t b { height: 3px; background: var(--skip); }
+.demo:not([data-step="0"]) .ln.r i, .demo:not([data-step="0"]) .ln.r .t b, .demo[data-step="1"] .ln.g i, .demo[data-step="1"] .ln.g .t b { background: var(--pink); }
+.demo[data-step="2"] .ln.g i, .demo[data-step="2"] .ln.g .t b, .demo[data-step="3"] .ln.g i, .demo[data-step="3"] .ln.g .t b, .demo[data-step="4"] .ln.g i, .demo[data-step="4"] .ln.g .t b { background: var(--glance); }
+.key { display: flex; flex-wrap: wrap; gap: 8px 18px; min-height: 1.6em; margin: 18px 0 0; padding: 0; list-style: none; color: var(--body); font-size: 13.5px; }
 .key li { display: none; align-items: center; gap: 7px; }
 .key li.in { display: inline-flex; animation: keyin .4s both; }
 .key i { width: 14px; height: 5px; border-radius: 3px; background: var(--chg); }
@@ -187,17 +195,20 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 @media (max-width: 680px) {
   .stage { padding: 16px 16px 52px; border-radius: 20px; }
   .lead { margin: 12px 0 16px; font-size: 1.1rem; }
-  .files { --row: 72px; }
-  .file { grid-template-columns: 22px minmax(0, 1fr) 30%; gap: 10px; padding: 0 12px 0 10px; }
-  .why, .tag { font-size: 12px; }
-  .tag { padding: 0 7px; }
+  .sheet { --h: 136px; }
+  .file { padding: 8px 10px 6px 8px; }
+  .head code { font-size: 12.5px; }
+  .tag { font-size: 11px; }
+  .ln { grid-template-columns: 4px minmax(0, 1fr) 46%; gap: 0 6px; height: 12.5px; }
+  .ln u { display: none; }
+  .ln em { font-size: 10.5px; }
   .key { gap: 6px 14px; font-size: 12.5px; }
   .bar { left: 16px; right: 58px; bottom: 26px; }
   .ctl { right: 12px; bottom: 14px; }
   figure { padding: 16px 16px 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .file, .file .n, .why, .why span, .tag, .lines, .lines i, .lead span, .src i, .scene { transition: none; }
+  .file, .n, .head, .tag, .ln, .ln i, .ln .t b, .ln em, .lead span, .src i, .scene { transition: none; }
   .key li.in { animation: none; }
 }
 
@@ -246,39 +257,59 @@ footer strong { color: var(--body); font-weight: 500; }
         <p class="src"><i></i><span class="g">git diff main</span><span class="c">cribelo</span></p>
         <p class="lead" aria-live="polite">
           <span class="l0"><b>28</b> changed lines in four files. Git shows them all alike.</span>
-          <span class="l1"><b>15</b> lines only moved, got renamed or reformatted. 13 are left.</span>
-          <span class="l2"><b>5</b> of them sit in simple code that gained no decision: a glance. <b>8</b> need a close read.</span>
-          <span class="l3">Two facts the diff does not show: a function fixed three times this year, a signature four files call.</span>
-          <span class="l4">Start with <code>token.go</code>: the two others depend on it. <code>format.go</code> is skipped.</span>
-          <span class="l5">Read 3 of 4 changed files. <b>8</b> of 28 lines to read closely, <b>5</b> to glance at.</span>
+          <span class="l1"><b>16</b> of them only moved, got renamed or reformatted. 12 are left.</span>
+          <span class="l2"><b>5</b> sit in simple code that gained no decision: a glance. <b>7</b> need a close read.</span>
+          <span class="l3">Two facts the diff does not show.</span>
+          <span class="l4">Read <code>token.go</code> first: the two others depend on it. Skip <code>format.go</code>.</span>
+          <span class="l5">Read 3 of 4 files. <b>7</b> of 28 lines to read closely, <b>5</b> to glance at.</span>
         </p>
-        <div class="files">
+        <div class="sheet" aria-hidden="true">
           <div class="file" data-f="cli">
-            <span class="n">3</span>
-            <div class="meta"><code>cli.go</code><span class="why"><span class="w1">imports and a moved block: 4 set aside</span><span class="w2">3 lines of wiring, no decision: glance</span></span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="--w:46%"></i><i class="m" style="--w:62%"></i><i class="m" style="--w:80%"></i><i class="m" style="--w:54%"></i><i class="g" style="--w:90%"></i><i class="g" style="--w:70%"></i><i class="g" style="--w:40%"></i></div>
+            <div class="head"><span class="n">3</span><code>cli.go</code></div>
+            <span class="ln m"><u>12</u><i></i><span class="t" style="--i:0"><b style="--w:10%"></b><b style="--w:14%"></b><b style="--w:22%"></b></span><em>imports</em></span>
+            <span class="ln m"><u>13</u><i></i><span class="t" style="--i:0"><b style="--w:8%"></b><b style="--w:26%"></b></span></span>
+            <span class="ln m"><u>14</u><i></i><span class="t" style="--i:1"><b style="--w:8%"></b><b style="--w:12%"></b><b style="--w:18%"></b><b style="--w:8%"></b></span><em>moved block</em></span>
+            <span class="ln m"><u>15</u><i></i><span class="t" style="--i:1"><b style="--w:10%"></b><b style="--w:8%"></b><b style="--w:8%"></b><b style="--w:14%"></b></span></span>
+            <span class="ln g"><u>16</u><i></i><span class="t" style="--i:1"><b style="--w:8%"></b><b style="--w:10%"></b><b style="--w:8%"></b></span><em>main(): wiring, no decision</em></span>
+            <span class="ln g"><u>17</u><i></i><span class="t" style="--i:2"><b style="--w:14%"></b><b style="--w:8%"></b><b style="--w:26%"></b><b style="--w:18%"></b></span></span>
+            <span class="ln g"><u>18</u><i></i><span class="t" style="--i:2"><b style="--w:10%"></b><b style="--w:22%"></b></span></span>
           </div>
           <div class="file" data-f="format">
-            <span class="n x">skip</span>
-            <div class="meta"><code>format.go</code><span class="why"><span class="w1 w2">formatting only: nothing left to read</span></span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="--w:72%"></i><i class="m" style="--w:50%"></i><i class="m" style="--w:86%"></i><i class="m" style="--w:64%"></i><i class="m" style="--w:44%"></i><i class="m" style="--w:78%"></i></div>
+            <div class="head"><span class="n x">skip</span><code>format.go</code></div>
+            <span class="ln m"><u>40</u><i></i><span class="t" style="--i:0"><b style="--w:8%"></b><b style="--w:18%"></b><b style="--w:18%"></b><b style="--w:14%"></b></span><em>formatting only</em></span>
+            <span class="ln m"><u>41</u><i></i><span class="t" style="--i:1"><b style="--w:10%"></b><b style="--w:8%"></b></span></span>
+            <span class="ln m"><u>42</u><i></i><span class="t" style="--i:2"><b style="--w:26%"></b><b style="--w:10%"></b><b style="--w:12%"></b><b style="--w:14%"></b></span></span>
+            <span class="ln m"><u>43</u><i></i><span class="t" style="--i:2"><b style="--w:18%"></b><b style="--w:8%"></b></span></span>
+            <span class="ln m"><u>44</u><i></i><span class="t" style="--i:1"><b style="--w:12%"></b><b style="--w:18%"></b><b style="--w:26%"></b><b style="--w:22%"></b></span></span>
+            <span class="ln m"><u>45</u><i></i><span class="t" style="--i:1"><b style="--w:8%"></b><b style="--w:18%"></b></span></span>
+            <span class="ln m"><u>46</u><i></i><span class="t" style="--i:0"><b style="--w:22%"></b><b style="--w:10%"></b><b style="--w:12%"></b><b style="--w:8%"></b></span></span>
           </div>
           <div class="file" data-f="parser">
-            <span class="n">2</span>
-            <div class="meta"><code>parser.go</code><span class="why"><span class="w1">a rename: 2 set aside</span><span class="w2">parse() gained two branches: read closely</span></span><span class="tag">fixed 3 times this year</span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="--w:58%"></i><i class="m" style="--w:74%"></i><i class="r" style="--w:88%"></i><i class="r" style="--w:66%"></i><i class="r" style="--w:94%"></i><i class="r" style="--w:52%"></i><i class="r" style="--w:80%"></i><i class="g" style="--w:36%"></i></div>
+            <div class="head"><span class="n">2</span><code>parser.go</code><span class="tag">fixed 3 times this year</span></div>
+            <span class="ln m"><u>88</u><i></i><span class="t" style="--i:0"><b style="--w:22%"></b><b style="--w:8%"></b><b style="--w:18%"></b><b style="--w:8%"></b></span><em>rename: Parse → parse</em></span>
+            <span class="ln m"><u>89</u><i></i><span class="t" style="--i:1"><b style="--w:10%"></b><b style="--w:14%"></b><b style="--w:22%"></b><b style="--w:18%"></b></span></span>
+            <span class="ln r"><u>90</u><i></i><span class="t" style="--i:1"><b style="--w:26%"></b><b style="--w:12%"></b><b style="--w:14%"></b></span><em>parse(): 2 → 4 decisions</em></span>
+            <span class="ln r"><u>91</u><i></i><span class="t" style="--i:2"><b style="--w:14%"></b><b style="--w:12%"></b><b style="--w:12%"></b><b style="--w:10%"></b></span></span>
+            <span class="ln r"><u>92</u><i></i><span class="t" style="--i:3"><b style="--w:22%"></b><b style="--w:26%"></b></span></span>
+            <span class="ln r"><u>93</u><i></i><span class="t" style="--i:2"><b style="--w:8%"></b><b style="--w:18%"></b></span></span>
+            <span class="ln g"><u>94</u><i></i><span class="t" style="--i:0"><b style="--w:18%"></b><b style="--w:14%"></b><b style="--w:12%"></b></span><em>a constant</em></span>
           </div>
           <div class="file" data-f="token">
-            <span class="n">1</span>
-            <div class="meta"><code>token.go</code><span class="why"><span class="w1">a moved block: 3 set aside</span><span class="w2">New() gained a branch: read closely · a field: glance</span></span><span class="tag">2 → 3 parameters, 4 callers</span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="--w:68%"></i><i class="m" style="--w:84%"></i><i class="m" style="--w:56%"></i><i class="g" style="--w:76%"></i><i class="r" style="--w:92%"></i><i class="r" style="--w:60%"></i><i class="r" style="--w:42%"></i></div>
+            <div class="head"><span class="n">1</span><code>token.go</code><span class="tag">2 → 3 parameters, 4 callers</span></div>
+            <span class="ln m"><u>21</u><i></i><span class="t" style="--i:0"><b style="--w:12%"></b><b style="--w:18%"></b><b style="--w:8%"></b></span><em>moved from lexer.go</em></span>
+            <span class="ln m"><u>22</u><i></i><span class="t" style="--i:1"><b style="--w:18%"></b><b style="--w:14%"></b></span></span>
+            <span class="ln m"><u>23</u><i></i><span class="t" style="--i:1"><b style="--w:26%"></b><b style="--w:12%"></b></span></span>
+            <span class="ln g"><u>24</u><i></i><span class="t" style="--i:1"><b style="--w:14%"></b><b style="--w:14%"></b></span><em>a field</em></span>
+            <span class="ln r"><u>25</u><i></i><span class="t" style="--i:1"><b style="--w:22%"></b><b style="--w:8%"></b></span><em>New(): 1 → 2 decisions</em></span>
+            <span class="ln r"><u>26</u><i></i><span class="t" style="--i:2"><b style="--w:18%"></b><b style="--w:26%"></b><b style="--w:26%"></b><b style="--w:12%"></b></span></span>
+            <span class="ln r"><u>27</u><i></i><span class="t" style="--i:2"><b style="--w:22%"></b><b style="--w:12%"></b><b style="--w:18%"></b></span></span>
           </div>
         </div>
         <ul class="key" aria-hidden="true">
           <li class="c in"><i></i>changed <b>28</b></li>
-          <li class="m"><i></i>set aside <b>15</b></li>
+          <li class="m"><i></i>set aside <b>16</b></li>
           <li class="g"><i></i>glance <b>5</b></li>
-          <li class="r"><i></i><span class="a">to read <b>13</b></span><span class="bb">read closely <b>8</b></span></li>
+          <li class="r"><i></i><span class="a">to read <b>12</b></span><span class="bb">read closely <b>7</b></span></li>
         </ul>
         </div>
         <div class="bar" aria-hidden="true"><i></i></div>
@@ -741,10 +772,10 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
   const cues = [
     [200, () => files[0].classList.add('in')], [500, () => files[1].classList.add('in')],
     [800, () => files[2].classList.add('in')], [1100, () => files[3].classList.add('in')],
-    [3600, () => step(1)], [8000, () => step(2)], [12200, () => step(3)], [16200, () => step(4)],
-    [21200, () => d.classList.add('end')], [25200, () => d.classList.add('out')],
+    [3800, () => step(1)], [8600, () => step(2)], [13200, () => step(3)], [16800, () => step(4)],
+    [21800, () => d.classList.add('end')], [25800, () => d.classList.add('out')],
   ];
-  const total = 25800;
+  const total = 26400;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
     d.classList.add('still', 'end'); files.forEach(f => f.classList.add('in')); step(4); return;
   }
