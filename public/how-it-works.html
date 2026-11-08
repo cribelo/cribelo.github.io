@@ -569,7 +569,7 @@ footer strong { color: var(--body); font-weight: 500; }
       <li><b>Natures</b><span>What is read at all, and how many lines of each hunk. A file whose hunks are all mechanical never enters the list, whatever its score.</span></li>
       <li><b>Facts</b><span>Which group comes first: a cycle, a signature change, a fix record, a first dependency or a clone pulls its group to the top.</span></li>
       <li><b>Dependencies</b><span>The order inside a group: the definition before its uses, each test right after the file it exercises.</span></li>
-      <li><b>Score</b><span>What is left: which files fit a budget, the tie between two groups, and the high, medium and low levels of the gate. Ten public signals, weights you can recalibrate on your own history.</span></li>
+      <li><b>Score</b><span>What is left: which files fit a budget, the tie between two groups, and the high, medium and low levels shown in the table. Ten public signals, weights you can recalibrate on your own history.</span></li>
     </ol>
     <h3>Under a budget</h3>
     <p><code>cribelo --budget 30m</code> fills the time with the best-ranked files first, at twenty lines read closely a minute and sixty glanced at, and adds a test only while it fits. What does not fit is listed under Skip as ranked lower, with everything it knows about it.</p>
@@ -624,6 +624,8 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
   ranked lower 9 · tests only 7 · no measurable change 4    <span class="dim">cribelo skip</span>
 </pre>
     <p>Each column is a measure you can check: cyclomatic complexity of the touched functions, lines to read closely out of lines changed, lines to glance at, files that import this one, commits and fix commits in the last ninety days, similarity with another function, a test file next to it.</p>
+    <h3>A gate on what is measured</h3>
+    <p>Nothing here fails a build on its own. In the Action, <code>fail-over: 1h</code> fails the job when reading the whole change would take more than an hour, every file counted, budget or not: the change is too large for one reviewer. <code>fail-on: cycle, signature</code> fails it when the change introduces an import cycle or changes an exported signature that other files call; any kind of fact can be named. The job says why in one line, such as "reading time 1 h 17, over the 1 h allowed". The score never closes a gate: a level is an estimate, a gate needs a measure.</p>
 
     <h2 id="measured">On twenty-eight repositories</h2>
     <p>Twenty-eight open-source repositories in seven languages, their last 2,500 landings each, replayed with <code>cribelo backtest</code>. The table says how many changed lines of code are left to read once the mechanical hunks are set aside, and how many files have nothing left to read at all.</p>
