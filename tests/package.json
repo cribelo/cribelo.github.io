@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "html-validate --config .htmlvalidate.json ../public/*.html && node a11y.mjs"
+    "check": "html-validate --config .htmlvalidate.json ../public/*.html && node a11y.mjs && node add-to-github.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

@@ -167,6 +167,25 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .one p + p { margin-top: 14px; color: var(--muted); font-size: 17px; letter-spacing: 0; }
 .one code { font-size: .9em; }
 .one a { color: var(--pink-text); }
+.add { margin-top: 30px; max-width: 32em; }
+.add[hidden] { display: none; }
+.add .field { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px; border-radius: 28px; background: var(--soft); }
+.add input { min-width: 0; padding: 9px 14px; border: 1px solid transparent; border-radius: 99px; background: var(--bg); color: var(--ink); font: 14px/1.2 var(--mono); }
+.add input:hover { border-color: var(--line); }
+.add #repo { flex: 1 1 12em; }
+.add #branch { flex: 0 1 7em; width: 7em; }
+.add .field button { flex: none; padding: 9px 18px; border: 0; border-radius: 99px; background: var(--ink); color: var(--bg); font: 600 14px/1.2 var(--sans); cursor: pointer; transition: transform .15s, background .15s, color .15s; }
+.add .go { position: relative; flex: none; display: flex; }
+.add .tip { position: absolute; bottom: calc(100% + 12px); right: 0; z-index: 2; width: 18em; padding: 12px 14px; border-radius: 14px; background: var(--ink); color: var(--bg); font: 14px/1.4 var(--sans); letter-spacing: 0; box-shadow: 0 12px 30px -12px rgba(13,17,23,.45); opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity .15s, transform .15s, visibility .15s; }
+.add .tip::after { content: ""; position: absolute; top: 100%; right: 40px; border: 7px solid transparent; border-top-color: var(--ink); }
+.add .tip b { font-weight: 600; }
+.add .go:hover .tip, .add .go:focus-within .tip { opacity: 1; visibility: visible; transform: none; }
+.add .go.quiet .tip { opacity: 0; visibility: hidden; }
+@media (max-width: 560px) { .add .tip { right: auto; left: 0; } .add .tip::after { right: auto; left: 40px; } }
+@media (prefers-reduced-motion: reduce) { .add .tip { transition: none; } }
+.add .field button:hover { background: var(--hot); color: #fff; transform: scale(1.04); }
+.one .add p { max-width: none; margin-top: 12px; color: var(--muted); font-size: 15px; letter-spacing: 0; line-height: 1.45; }
+.add .link { padding: 0; border: 0; background: none; color: var(--pink-text); font: inherit; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; cursor: pointer; }
 .code { position: relative; }
 .code button { position: absolute; top: 14px; right: 14px; }
 pre { margin: 0; padding: 30px 32px; overflow-x: auto; background: var(--soft); border-radius: 28px; color: var(--body); font-size: 14px; line-height: 1.7; }
@@ -294,12 +313,24 @@ footer strong { color: var(--body); font-weight: 500; }
 <div class="wrap">
   <section class="one rise" id="pull-requests">
     <div>
-      <h2>One file. Done.</h2>
+      <h2>On your repo in one click.</h2>
       <p>Every pull request gets one comment, updated on each push. <a href="https://github.com/cribelo/cribelo/pull/1">See a real one.</a></p>
       <p>Save it in <code>.github/workflows/</code>. Want a time limit? Add <code>with: { budget: 30m }</code>. Want the map in the description? <code>cribelo describe</code>.</p>
+      <form class="add" hidden>
+        <div class="field">
+          <input id="repo" name="repo" aria-label="Repository, owner/name" placeholder="owner/repo" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+          <input id="branch" name="branch" aria-label="Branch" value="main" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+          <span class="go">
+            <button type="submit" aria-describedby="add-tip">Add to GitHub</button>
+            <span class="tip" id="add-tip" role="tooltip">Opens GitHub in a new tab, with the workflow already written. Nothing changes in your repository until you click <b>Commit changes</b> there.</span>
+          </span>
+        </div>
+        <p>Pull requests from forks or Dependabot cannot comment on their own: <button type="submit" class="link" name="file" value="comment">add the second workflow</button> that posts for them.</p>
+      </form>
     </div>
     <div class="code">
-<pre tabindex="0" aria-label="GitHub Actions workflow, .github/workflows/cribelo.yml">on: pull_request
+<pre tabindex="0" aria-label="GitHub Actions workflow, .github/workflows/cribelo.yml">name: cribelo
+on: pull_request
 permissions:
   contents: read
   pull-requests: write
@@ -537,6 +568,52 @@ var MECH = {"imports": 11};
   document.querySelectorAll('.code').forEach(function (box) {
     copier(box.querySelector('button'), function () { return box.querySelector('pre').textContent; });
   });
+
+  // "Add to GitHub" opens GitHub's new-file editor with the workflow filled in.
+  // GitHub answers 404 on /new/HEAD, so the branch is asked for, and filled
+  // with the repository's default branch when the public API knows it.
+  var add = document.querySelector('.add');
+  var COMMENT = 'on:\n  workflow_run:\n    workflows: [cribelo]\n    types: [completed]\npermissions:\n  actions: read\n  pull-requests: write\njobs:\n  comment:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: cribelo/cribelo/comment@v2\n';
+  function slug(v) {
+    var m = v.trim().replace(/^(https?:\/\/)?(www\.)?github\.com\//i, '').replace(/(\.git)?\/*$/, '').match(/^([\w.-]+)\/([\w.-]+)$/);
+    return m && m[1] + '/' + m[2];
+  }
+  function newFileUrl(repo, branch, file) {
+    var yaml = file === 'comment' ? COMMENT : document.querySelector('.one pre').textContent + '\n';
+    var name = file === 'comment' ? 'cribelo-comment.yml' : 'cribelo.yml';
+    return 'https://github.com/' + repo + '/new/' + branch.split('/').map(encodeURIComponent).join('/') +
+      '?filename=' + encodeURIComponent('.github/workflows/' + name) + '&value=' + encodeURIComponent(yaml);
+  }
+  if (add) {
+    var repoIn = add.querySelector('#repo'), branchIn = add.querySelector('#branch');
+    var branchTouched = false, timer, asked = '';
+    add.hidden = false;
+    branchIn.addEventListener('input', function () { branchTouched = true; });
+    repoIn.addEventListener('input', function () {
+      repoIn.setCustomValidity('');
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        var repo = slug(repoIn.value);
+        if (!repo || repo === asked || branchTouched || !window.fetch) return;
+        asked = repo;
+        fetch('https://api.github.com/repos/' + repo).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+          if (d && d.default_branch && !branchTouched && slug(repoIn.value) === repo) branchIn.value = d.default_branch;
+        }).catch(function () {});
+      }, 400);
+    });
+    // The tooltip stays while hovered or focused, and Escape hides it (WCAG 1.4.13).
+    var go = add.querySelector('.go');
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') go.classList.add('quiet'); });
+    go.addEventListener('mouseleave', function () { go.classList.remove('quiet'); });
+    go.addEventListener('focusout', function () { go.classList.remove('quiet'); });
+    add.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var repo = slug(repoIn.value), branch = branchIn.value.trim();
+      if (!repo) { repoIn.setCustomValidity('owner/repo, for example cribelo/cribelo'); repoIn.reportValidity(); return; }
+      var file = e.submitter && e.submitter.value === 'comment' ? 'comment' : 'main';
+      window.open(newFileUrl(repo, branch || 'main', file), '_blank', 'noopener');
+    });
+  }
 })();
 </script>
 </body>
