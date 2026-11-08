@@ -189,6 +189,22 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .one .add p { max-width: none; margin-top: 12px; color: var(--muted); font-size: 15px; letter-spacing: 0; line-height: 1.45; }
 .add .link { padding: 0; border: 0; background: none; color: var(--pink-text); font: inherit; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; cursor: pointer; }
 .code { position: relative; }
+.pop { width: min(100% - 32px, 640px); max-height: calc(100% - 32px); padding: 40px 40px 36px; border: 0; border-radius: 28px; background: var(--bg); color: var(--body); box-shadow: 0 40px 80px -30px rgba(13,17,23,.5); overflow-y: auto; }
+.pop::backdrop { background: rgba(13,17,23,.55); backdrop-filter: blur(4px); }
+.pop[open] { animation: pop .25s cubic-bezier(.3,1.4,.5,1); }
+@keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.97); } }
+@media (prefers-reduced-motion: reduce) { .pop[open] { animation: none; } }
+.pop h3 { margin: 0 0 14px; color: var(--ink); font-size: 1.9rem; font-weight: 600; letter-spacing: -.04em; line-height: 1.1; }
+.pop p { margin: 0 0 20px; font-size: 16px; line-height: 1.5; }
+.pop p.small { margin: 20px 0 0; color: var(--muted); font-size: 14px; }
+.pop code { color: var(--ink); font-size: .9em; }
+.pop a { color: var(--pink-text); }
+.pop pre { padding: 24px 24px 24px 24px; padding-right: 96px; border-radius: 20px; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pop .code { margin-bottom: 20px; }
+.pop .code button { top: 12px; right: 12px; }
+.pop .close { position: absolute; top: 14px; right: 16px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: none; color: var(--muted); font: 28px/1 var(--sans); cursor: pointer; }
+.pop .close:hover { background: var(--soft); color: var(--ink); }
+@media (max-width: 480px) { .pop { padding: 32px 20px 24px; } .pop pre { padding: 20px; padding-top: 56px; } }
 .code button { position: absolute; top: 14px; right: 14px; }
 pre { margin: 0; padding: 30px 32px; overflow-x: auto; background: var(--soft); border-radius: 28px; color: var(--body); font-size: 14px; line-height: 1.7; }
 pre b { color: var(--pink-text); font-weight: 500; }
@@ -333,6 +349,7 @@ footer strong { color: var(--body); font-weight: 500; }
           </span>
         </div>
         <p>Pull requests from forks or Dependabot cannot comment on their own: <button type="submit" class="link" name="file" value="comment">add the second workflow</button> that posts for them.</p>
+        <p>On GitLab? <button type="button" class="link" data-open="gitlab">One line in <code>.gitlab-ci.yml</code></button>.</p>
       </form>
     </div>
     <div class="code">
@@ -351,6 +368,19 @@ jobs:
       <button type="button" hidden>Copy</button>
     </div>
   </section>
+
+  <dialog class="pop" id="gitlab" aria-labelledby="gitlab-title">
+  <button type="button" class="close" aria-label="Close">&times;</button>
+  <h3 id="gitlab-title">Cribelo on GitLab</h3>
+  <p>Add this to your <code>.gitlab-ci.yml</code>. Every merge request then gets its reading plan, in the job log and as an artifact linked from the merge request.</p>
+  <div class="code">
+<pre tabindex="0" aria-label="GitLab CI include">include:
+  - remote: <b>https://raw.githubusercontent.com/cribelo/cribelo/v2/ci/gitlab-ci.yml</b></pre>
+    <button type="button" hidden>Copy</button>
+  </div>
+  <p>Want the plan as a comment, updated on each push? Store a token with the <code>api</code> scope in a masked <code>CRIBELO_TOKEN</code> variable. A project access token with the Reporter role is best; on GitLab.com Free, use a personal access token.</p>
+  <p class="small">Merge requests from forks run without your variables, so their plan stays in the artifact. Budget, gates and the rest are in <a href="https://github.com/cribelo/cribelo#in-a-gitlab-merge-request">the README</a>.</p>
+</dialog>
 
   <section class="end rise">
     <p>It won't find your bugs. <span>It tells you what to read.</span></p>
@@ -659,6 +689,14 @@ var PLANS = {"5":{"m":9,"read":[6],"why":"17 ranked lower \u00b7 12 tests only \
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') go.classList.add('quiet'); });
     go.addEventListener('mouseleave', function () { go.classList.remove('quiet'); });
     go.addEventListener('focusout', function () { go.classList.remove('quiet'); });
+    // Popins: a native <dialog>, closed by its button, Escape or a click outside.
+    document.querySelectorAll('[data-open]').forEach(function (b) {
+      var d = document.getElementById(b.getAttribute('data-open'));
+      if (!d || !d.showModal) { b.closest('p').hidden = true; return; }
+      b.addEventListener('click', function () { d.showModal(); });
+      d.querySelector('.close').addEventListener('click', function () { d.close(); });
+      d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+    });
     add.addEventListener('submit', function (e) {
       e.preventDefault();
       var repo = slug(repoIn.value), branch = branchIn.value.trim();

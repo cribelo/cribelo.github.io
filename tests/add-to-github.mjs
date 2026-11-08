@@ -76,6 +76,20 @@ await page.fill('#repo', 'not a repo');
 await page.getByRole('button', { name: 'Add to GitHub' }).click();
 ok((await page.evaluate(() => window.__opened.length)) === 0, 'invalid repository opens nothing');
 
+// The GitLab popin opens, shows the include line, and closes on Escape.
+await page.reload();
+const opener = page.getByRole('button', { name: 'One line in .gitlab-ci.yml' });
+await opener.click();
+const dialog = page.getByRole('dialog', { name: 'Cribelo on GitLab' });
+ok(await dialog.isVisible(), 'GitLab popin opens');
+ok((await dialog.locator('pre').textContent()).includes('remote: https://raw.githubusercontent.com/cribelo/cribelo/v2/ci/gitlab-ci.yml'), 'popin holds the include line');
+await page.keyboard.press('Escape');
+ok(!(await dialog.isVisible()), 'Escape closes the popin');
+ok(await opener.evaluate(b => document.activeElement === b), 'focus returns to the opener');
+await opener.click();
+await dialog.getByRole('button', { name: 'Close' }).click();
+ok(!(await dialog.isVisible()), 'the close button closes the popin');
+
 console.log(`ok   add-to-github, ${checks} checks`);
 await browser.close();
 server.close();
