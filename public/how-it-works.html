@@ -189,7 +189,8 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .ctl { position: absolute; right: 24px; bottom: 18px; width: 32px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--ink); cursor: pointer; transition: background .2s; }
 .ctl:hover { background: var(--bg); }
 .ctl svg { width: 14px; height: 14px; fill: currentColor; }
-.ctl .pl { display: none; } .demo.paused .ctl .pl { display: block; } .demo.paused .ctl .pa { display: none; }
+.ctl .pl, .ctl .re { display: none; } .demo.paused .ctl .pl { display: block; } .demo.paused .ctl .pa { display: none; }
+.demo.ended .ctl .re { display: block; } .demo.ended .ctl .pa, .demo.ended .ctl .pl { display: none; }
 .demo.still .bar, .demo.still .ctl { display: none; }
 .demo.still .stage { padding-bottom: 24px; cursor: default; }
 @media (max-width: 680px) {
@@ -212,7 +213,7 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
   .key li.in { animation: none; }
 }
 
-footer { padding: 28px 0 44px; color: var(--muted); font-size: 14px; }
+footer { max-width: 760px; margin: 0 auto; padding: 28px 0 44px; color: var(--muted); font-size: 14px; }
 footer p { margin-bottom: 6px; max-width: 48em; }
 footer strong { color: var(--body); font-weight: 500; }
 
@@ -313,7 +314,7 @@ footer strong { color: var(--body); font-weight: 500; }
         </ul>
         </div>
         <div class="bar" aria-hidden="true"><i></i></div>
-        <button class="ctl" type="button" aria-label="Pause"><svg class="pa" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="1" width="3.5" height="12" rx="1"/><rect x="8.5" y="1" width="3.5" height="12" rx="1"/></svg><svg class="pl" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11a.6.6 0 0 0 .9.5l8.6-5.5a.6.6 0 0 0 0-1L3.9 1a.6.6 0 0 0-.9.5z"/></svg></button>
+        <button class="ctl" type="button" aria-label="Pause"><svg class="pa" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="1" width="3.5" height="12" rx="1"/><rect x="8.5" y="1" width="3.5" height="12" rx="1"/></svg><svg class="pl" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11a.6.6 0 0 0 .9.5l8.6-5.5a.6.6 0 0 0 0-1L3.9 1a.6.6 0 0 0-.9.5z"/></svg><svg class="re" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.2a5.8 5.8 0 1 1-5.6 7.3.8.8 0 0 1 1.55-.4A4.2 4.2 0 1 0 7 2.8V5L3.5 2.6 7 .2z"/></svg></button>
       </div>
     </div>
 
@@ -684,8 +685,11 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     <h3>A gate on what is measured</h3>
     <p>Nothing here fails a build on its own. In the Action, <code>fail-over: 1h</code> fails the job when reading the whole change would take more than an hour, every file counted, budget or not: the change is too large for one reviewer. <code>fail-on: cycle, signature</code> fails it when the change introduces an import cycle or changes an exported signature that other files call; any kind of fact can be named. The job says why in one line, such as "reading time 1 h 17, over the 1 h allowed". The score never closes a gate: a level is an estimate, a gate needs a measure.</p>
 
-    <h2 id="measured">On twenty-eight repositories</h2>
-    <p>Twenty-eight open-source repositories in seven languages, their last 2,500 landings each, replayed with <code>cribelo backtest</code>. The table says how many changed lines of code are left to read once the mechanical hunks are set aside, and how many files have nothing left to read at all.</p>
+    <h2 id="measured">How the relevance of Cribelo was measured</h2>
+    <p>A reading map cannot be scored by a benchmark, so Cribelo was run on history. Twenty-eight open-source repositories in seven languages (Go, Rust, Python, TypeScript, PHP, Java, C#), their last 2,500 merges each: every merge is replayed against its parent with <code>cribelo backtest</code>, as if Cribelo had been there, and the plan it would have printed is kept. Four questions follow, each with the measure that answers it.</p>
+
+    <h3>How much of a change is mechanical?</h3>
+    <p>For every replayed change, the share of changed code lines still to read once moves, renames, formatting and imports are set aside, and the share of files where nothing is left to read.</p>
     <table class="num">
       <thead><tr><th>Language</th><th>Changed lines</th><th>Left to read</th><th>Files with nothing to read</th></tr></thead>
       <tbody>
@@ -701,8 +705,8 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     </table>
     <p>On an ordinary month of pull requests, 8&nbsp;% of the changed lines and 14&nbsp;% of the files need no reading. The share climbs on the changes that drown a reviewer. In ruff, the pull request that splits <code>types/class.rs</code> changes 10,595 lines: 8,424 are moved, 3,678 are left to read, and git sees no rename. In phpstan, 2,636 lines land in <code>LegacyTypeSpecifier.php</code> and 124 are left to read.</p>
 
-    <h3>Read closely or glance at, function by function</h3>
-    <p>The same repositories, their last 1,500 landings, replayed function by function, with the lines a later fix repaired as the label (SZZ). 130,998 touched functions, 2,549 of them repaired later. The table reads: among the functions that gained no decision and ended at complexity 2 or below, 1.2&nbsp;% were repaired; among those that gained three decisions or more and ended above 10, 7.3&nbsp;%.</p>
+    <h3>Does the glance rule point at the right lines?</h3>
+    <p>A reading rule can be checked without a reader, with the future: a function whose new lines were touched by a later bug fix deserved a close read. The same repositories, their last 1,500 merges, replayed function by function: 130,998 touched functions, 2,549 of them repaired later. The table reads: among the functions that gained no decision and ended at complexity 2 or below, 1.2&nbsp;% were repaired later; among those that gained three decisions or more and ended above 10, 7.3&nbsp;%.</p>
     <table class="num">
       <thead><tr><th>Decisions gained</th><th>Complexity after</th><th>Share of lines</th><th>Functions repaired later</th></tr></thead>
       <tbody>
@@ -717,8 +721,8 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     </table>
     <p>The rule Cribelo ships, no decision gained and complexity 3 or below after the change, glances at 52&nbsp;% of the lines inside touched functions. The functions it glances at were repaired 1.3&nbsp;% of the time, the ones it reads closely 2.8&nbsp;%. A third of the functions repaired later sit in the glanced half, which is why a glance is a fast read and never a skip. The reach of a file did not help: functions in files no other file imports were repaired 2.5&nbsp;% of the time, functions in files imported by twenty or more 1.4&nbsp;%. A test touched in the same change made no difference either, 2.1&nbsp;% against 1.9&nbsp;%. With the lines outside any function, the glanced share of a change runs from a third in caddy and the GitHub CLI to nine tenths in spring-boot and bitwarden.</p>
 
-    <h3>Facts and reviewer comments</h3>
-    <p>Four sets of 25 pull requests with human review comments, from prometheus, pydantic, cargo and vite, replayed at the commit of the first comment. 17&nbsp;% of the changed files received a comment. The table counts, for each kind of fact, how many of the files it was stated on received one.</p>
+    <h3>Do the facts land where reviewers looked?</h3>
+    <p>Four sets of 25 pull requests with human review comments, from prometheus, pydantic, cargo and vite, replayed at the commit of the first comment. 17&nbsp;% of the changed files received a comment. The table counts, for each kind of fact, how many of the files it was stated on received one: a fact that lands on commented files far more often than 17&nbsp;% of the time points at what reviewers care about.</p>
     <table class="num">
       <thead><tr><th>Fact</th><th>Files with the fact</th><th>Commented by a reviewer</th></tr></thead>
       <tbody>
@@ -733,8 +737,8 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     </table>
     <p>Clone, fix history and unused API are far above the 17&nbsp;% base rate, signature above it. Cycle, dependency and library are facts about the structure; reviewers do not comment on them file by file, and they are not there to predict that.</p>
 
-    <h3>Reading order</h3>
-    <p>Share of the commented files among the first three files of the list: Cribelo 45&nbsp;%, alphabetical order 33&nbsp;%, largest files first 51&nbsp;%. The order of Cribelo puts the definition before its uses so that the reader understands what follows; this proxy does not measure understanding.</p>
+    <h3>Does the order put the commented files first?</h3>
+    <p>On the same hundred pull requests, share of the commented files among the first three files of the list: Cribelo 45&nbsp;%, alphabetical order 33&nbsp;%, largest files first 51&nbsp;%. The order of Cribelo puts the definition before its uses so that the reader understands what follows; this proxy does not measure understanding.</p>
 
     <h3>Not measured</h3>
     <ul>
@@ -744,12 +748,12 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     </ul>
 
     <h2 id="not">Limits</h2>
-    <p>Cribelo does not find bugs and never says a file is safe. It says what is left to read, what it knows for sure about the structure, and in which order to read. It does not know your layering rules either: a dependency from the domain to the infrastructure is a first dependency like any other. The score that settles the budget and the gate comes from ten signals (lines, complexity, coupling, fixes, churn, tests, clones); its weights are public, and <code>cribelo calibrate</code> learns them from your own history. Every rule, threshold and weight is in <a href="https://github.com/cribelo/cribelo/blob/main/docs/how-it-is-computed.md">docs/how-it-is-computed.md</a>.</p>
+    <p>Cribelo does not find bugs and never says a file is safe. It says what is left to read, what it knows for sure about the structure, and in which order to read. It does not know your layering rules either: a dependency from the domain to the infrastructure is a first dependency like any other. The score that settles the budget and the tie between two groups comes from ten signals (lines, complexity, coupling, fixes, churn, tests, clones); its weights are public, and <code>cribelo calibrate</code> learns them from your own history. Every rule, threshold and weight is in <a href="https://github.com/cribelo/cribelo/blob/main/docs/how-it-is-computed.md">docs/how-it-is-computed.md</a>.</p>
   </main>
 
   <footer>
     <p><strong>The parsers</strong>, the complexity model and the dependency graph come from <a href="https://github.com/ast-metrics/ast-metrics">AST Metrics</a>. <strong>Move matching</strong> follows RefDiff (Silva and Valente, 2017); <strong>the reading order</strong> follows Baum, Schneider and Bacchelli (2017).</p>
-    <p>MIT license. Made by Jean-François Lépine, author of <a href="https://github.com/phpmetrics/PhpMetrics">PhpMetrics</a>. <em>Cribellum</em> is Latin for a small sieve.</p>
+    <p>MIT license. Made by Jean-François Lépine, author of <a href="https://github.com/ast-metrics/ast-metrics">AST Metrics</a>. <em>Cribellum</em> is Latin for a small sieve.</p>
   </footer>
 </div>
 <script>
@@ -773,24 +777,29 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
     [200, () => files[0].classList.add('in')], [500, () => files[1].classList.add('in')],
     [800, () => files[2].classList.add('in')], [1100, () => files[3].classList.add('in')],
     [3800, () => step(1)], [8600, () => step(2)], [13200, () => step(3)], [16800, () => step(4)],
-    [21800, () => d.classList.add('end')], [25800, () => d.classList.add('out')],
+    [21800, () => d.classList.add('end')],
   ];
-  const total = 26400;
+  const total = 28500;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
     d.classList.add('still', 'end'); files.forEach(f => f.classList.add('in')); step(4); return;
   }
-  let t0 = performance.now(), elapsed = 0, next = 0, paused = false, away = false, raf = 0;
+  let t0 = performance.now(), elapsed = 0, next = 0, paused = false, away = false, ended = false, raf = 0;
   const frame = now => {
-    if (!paused && !away) {
+    if (!paused && !away && !ended) {
       elapsed += now - t0;
       while (next < cues.length && elapsed >= cues[next][0]) cues[next++][1]();
-      if (elapsed >= total) { elapsed = 0; next = 0; reset(); }
+      if (elapsed >= total) { elapsed = total; ended = true; d.classList.add('ended'); ctl.setAttribute('aria-label', 'Replay'); }
       bar.style.width = (100 * elapsed / total).toFixed(2) + '%';
     }
     t0 = now;
     raf = requestAnimationFrame(frame);
   };
+  const replay = () => {
+    d.classList.add('out');
+    setTimeout(() => { reset(); elapsed = 0; next = 0; ended = false; d.classList.remove('ended'); ctl.setAttribute('aria-label', 'Pause'); }, 500);
+  };
   const toggle = () => {
+    if (ended) return replay();
     paused = !paused;
     d.classList.toggle('paused', paused);
     ctl.setAttribute('aria-label', paused ? 'Play' : 'Pause');
