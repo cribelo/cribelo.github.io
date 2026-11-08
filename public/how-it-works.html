@@ -127,7 +127,9 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .toc a:hover { background: var(--pink); color: #fff; }
 
 .demo { margin: 40px 0 0; }
-.stage { padding: 24px 28px 22px; border-radius: 24px; background: var(--tint); }
+.stage { position: relative; padding: 24px 28px 60px; border-radius: 24px; background: var(--tint); overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.scene { transition: opacity .5s; }
+.demo.out .scene { opacity: 0; }
 .src { display: inline-flex; align-items: center; gap: 8px; padding: 4px 11px; border-radius: 99px; background: var(--bg); color: var(--muted); font: 500 12.5px/1.5 var(--mono); }
 .src i { width: 7px; height: 7px; border-radius: 50%; background: var(--chg); transition: background .5s; }
 .demo:not([data-step="0"]) .src i { background: var(--pink); }
@@ -137,9 +139,10 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .lead span { grid-area: 1 / 1; max-width: 28em; opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .45s, transform .45s, visibility 0s .45s; }
 .lead b { color: var(--pink-text); font-weight: 600; }
 .lead code { padding: 0; background: none; color: inherit; font-size: .9em; font-weight: 500; }
-.demo[data-step="0"] .l0, .demo[data-step="1"] .l1, .demo[data-step="2"] .l2, .demo[data-step="3"] .l3, .demo[data-step="4"] .l4 { opacity: 1; visibility: visible; transform: none; transition-delay: .15s, .15s, 0s; }
+.demo[data-step="0"] .l0, .demo[data-step="1"] .l1, .demo[data-step="2"] .l2, .demo[data-step="3"] .l3, .demo[data-step="4"]:not(.end) .l4, .demo.end .l5 { opacity: 1; visibility: visible; transform: none; transition-delay: .15s, .15s, 0s; }
 .files { --row: 80px; --gap: 10px; position: relative; height: calc(4 * var(--row) + 3 * var(--gap)); }
-.file { position: absolute; top: 0; left: 0; right: 0; height: var(--row); display: grid; grid-template-columns: 26px minmax(0, 1fr) 44%; align-items: center; gap: 16px; padding: 0 18px 0 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; transform: translateY(calc(var(--y) * (var(--row) + var(--gap)))); transition: transform .85s cubic-bezier(.65, 0, .25, 1), background .5s, border-color .5s; }
+.file { --in: 18px; position: absolute; top: 0; left: 0; right: 0; height: var(--row); display: grid; grid-template-columns: 26px minmax(0, 1fr) 44%; align-items: center; gap: 16px; padding: 0 18px 0 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; opacity: 0; transform: translateY(calc(var(--y) * (var(--row) + var(--gap)) + var(--in))); transition: transform .85s cubic-bezier(.65, 0, .25, 1), opacity .5s, background .5s, border-color .5s; }
+.file.in { --in: 0px; opacity: 1; }
 .file[data-f=cli] { --y: 0; } .file[data-f=format] { --y: 1; } .file[data-f=parser] { --y: 2; } .file[data-f=token] { --y: 3; }
 .demo[data-step="4"] .file[data-f=token] { --y: 0; } .demo[data-step="4"] .file[data-f=parser] { --y: 1; }
 .demo[data-step="4"] .file[data-f=cli] { --y: 2; } .demo[data-step="4"] .file[data-f=format] { --y: 3; }
@@ -158,13 +161,14 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .tag { align-self: flex-start; max-width: 100%; max-height: 0; padding: 0 9px; overflow: hidden; border-radius: 99px; background: var(--tint); color: var(--pink-text); font-size: 12.5px; font-weight: 500; line-height: 20px; white-space: nowrap; text-overflow: ellipsis; opacity: 0; transform: scale(.85); transform-origin: left center; transition: opacity .35s, transform .45s cubic-bezier(.3, 1.5, .5, 1), max-height .35s, margin .35s; }
 .demo[data-step="3"] .tag, .demo[data-step="4"] .tag { max-height: 20px; margin-top: 3px; opacity: 1; transform: none; }
 .lines { display: flex; flex-direction: column; justify-content: center; gap: 4px; transition: opacity .5s; }
-.lines i { display: block; height: 5px; border-radius: 3px; background: var(--chg); transition: background .5s, height .5s, opacity .5s; }
-.lines i:nth-child(2) { transition-delay: .05s; } .lines i:nth-child(3) { transition-delay: .1s; } .lines i:nth-child(4) { transition-delay: .15s; }
-.lines i:nth-child(5) { transition-delay: .2s; } .lines i:nth-child(6) { transition-delay: .25s; } .lines i:nth-child(7) { transition-delay: .3s; } .lines i:nth-child(8) { transition-delay: .35s; }
+.lines i { display: block; width: 0; height: 5px; border-radius: 3px; background: var(--chg); transition: width .7s cubic-bezier(.2, .7, .2, 1), background .5s, height .5s; }
+.file.in .lines i { width: var(--w); }
+.lines i:nth-child(2) { transition-delay: .06s; } .lines i:nth-child(3) { transition-delay: .12s; } .lines i:nth-child(4) { transition-delay: .18s; }
+.lines i:nth-child(5) { transition-delay: .24s; } .lines i:nth-child(6) { transition-delay: .3s; } .lines i:nth-child(7) { transition-delay: .36s; } .lines i:nth-child(8) { transition-delay: .42s; }
 .demo:not([data-step="0"]) .lines .m { height: 3px; background: var(--skip); }
 .demo:not([data-step="0"]) .lines .r, .demo[data-step="1"] .lines .g { background: var(--pink); }
 .demo[data-step="2"] .lines .g, .demo[data-step="3"] .lines .g, .demo[data-step="4"] .lines .g { background: var(--glance); }
-.key { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 20px 0 0; padding: 0; list-style: none; color: var(--body); font-size: 13.5px; }
+.key { display: flex; flex-wrap: wrap; gap: 8px 18px; min-height: 1.6em; margin: 20px 0 0; padding: 0; list-style: none; color: var(--body); font-size: 13.5px; }
 .key li { display: none; align-items: center; gap: 7px; }
 .key li.in { display: inline-flex; animation: keyin .4s both; }
 .key i { width: 14px; height: 5px; border-radius: 3px; background: var(--chg); }
@@ -172,36 +176,28 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .key b { color: var(--ink); font-weight: 600; }
 .key .r span { display: none; } .key .r .a, .key .r.b .bb { display: inline; } .key .r.b .a { display: none; }
 @keyframes keyin { from { opacity: 0; transform: translateY(4px); } }
-.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
-.steps li { margin: 0; }
-.steps button { position: relative; display: block; width: 100%; padding: 14px 12px 12px; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .2s; }
-.steps button:hover { background: var(--soft); }
-.steps button::before { content: ""; position: absolute; left: 12px; right: 12px; top: 6px; height: 3px; border-radius: 2px; background: var(--line); }
-.steps button::after { content: ""; position: absolute; left: 12px; right: 12px; top: 6px; height: 3px; border-radius: 2px; background: var(--pink); transform: scaleX(0); transform-origin: left; }
-.steps .done button::after { transform: scaleX(1); }
-.demo.play .steps .on button::after { animation: fill var(--d) linear forwards; }
-.demo.hold .steps .on button::after { animation-play-state: paused; }
-.steps b { display: block; color: var(--muted); font-size: 14.5px; font-weight: 600; letter-spacing: -.01em; transition: color .3s; }
-.steps span { display: block; margin-top: 2px; color: var(--faint); font-size: 13px; line-height: 1.35; }
-.steps .on b { color: var(--ink); } .steps .on span { color: var(--body); }
-@keyframes fill { to { transform: scaleX(1); } }
+.bar { position: absolute; left: 28px; right: 72px; bottom: 30px; height: 3px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 10%, transparent); overflow: hidden; }
+.bar i { display: block; width: 0; height: 100%; border-radius: 2px; background: var(--pink); }
+.ctl { position: absolute; right: 24px; bottom: 18px; width: 32px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--ink); cursor: pointer; transition: background .2s; }
+.ctl:hover { background: var(--bg); }
+.ctl svg { width: 14px; height: 14px; fill: currentColor; }
+.ctl .pl { display: none; } .demo.paused .ctl .pl { display: block; } .demo.paused .ctl .pa { display: none; }
+.demo.still .bar, .demo.still .ctl { display: none; }
+.demo.still .stage { padding-bottom: 24px; cursor: default; }
 @media (max-width: 680px) {
-  .stage { padding: 16px 16px 14px; border-radius: 20px; }
+  .stage { padding: 16px 16px 52px; border-radius: 20px; }
   .lead { margin: 12px 0 16px; font-size: 1.1rem; }
   .files { --row: 72px; }
   .file { grid-template-columns: 22px minmax(0, 1fr) 30%; gap: 10px; padding: 0 12px 0 10px; }
   .why, .tag { font-size: 12px; }
   .tag { padding: 0 7px; }
   .key { gap: 6px 14px; font-size: 12.5px; }
-  .steps { gap: 3px; }
-  .steps button { padding: 12px 4px 10px; text-align: center; }
-  .steps button::before, .steps button::after { left: 4px; right: 4px; }
-  .steps b { font-size: 12.5px; }
-  .steps span { display: none; }
+  .bar { left: 16px; right: 58px; bottom: 26px; }
+  .ctl { right: 12px; bottom: 14px; }
   figure { padding: 16px 16px 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .file, .file .n, .why, .why span, .tag, .lines, .lines i, .lead span, .src i { transition: none; }
+  .file, .file .n, .why, .why span, .tag, .lines, .lines i, .lead span, .src i, .scene { transition: none; }
   .key li.in { animation: none; }
 }
 
@@ -244,8 +240,9 @@ footer strong { color: var(--body); font-weight: 500; }
     <h1>How Cribelo works</h1>
     <p class="lede">Cribelo reads the diff of a branch and gives back three things: the lines that still need a human, the facts the diff does not show, and the order to read the files in. No model runs behind it, so the same change gets the same answer on every machine.</p>
 
-    <div class="demo" id="demo" data-step="4" role="group" aria-label="Cribelo on a change of four files, step by step">
+    <div class="demo" id="demo" data-step="0" role="group" aria-label="Cribelo on a change of four files, as it happens">
       <div class="stage">
+        <div class="scene">
         <p class="src"><i></i><span class="g">git diff main</span><span class="c">cribelo</span></p>
         <p class="lead" aria-live="polite">
           <span class="l0"><b>28</b> changed lines in four files. Git shows them all alike.</span>
@@ -253,27 +250,28 @@ footer strong { color: var(--body); font-weight: 500; }
           <span class="l2"><b>5</b> of them sit in simple code that gained no decision: a glance. <b>8</b> need a close read.</span>
           <span class="l3">Two facts the diff does not show: a function fixed three times this year, a signature four files call.</span>
           <span class="l4">Start with <code>token.go</code>: the two others depend on it. <code>format.go</code> is skipped.</span>
+          <span class="l5">Read 3 of 4 changed files. <b>8</b> of 28 lines to read closely, <b>5</b> to glance at.</span>
         </p>
         <div class="files">
           <div class="file" data-f="cli">
             <span class="n">3</span>
             <div class="meta"><code>cli.go</code><span class="why"><span class="w1">imports and a moved block: 4 set aside</span><span class="w2">3 lines of wiring, no decision: glance</span></span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="width:46%"></i><i class="m" style="width:62%"></i><i class="m" style="width:80%"></i><i class="m" style="width:54%"></i><i class="g" style="width:90%"></i><i class="g" style="width:70%"></i><i class="g" style="width:40%"></i></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="--w:46%"></i><i class="m" style="--w:62%"></i><i class="m" style="--w:80%"></i><i class="m" style="--w:54%"></i><i class="g" style="--w:90%"></i><i class="g" style="--w:70%"></i><i class="g" style="--w:40%"></i></div>
           </div>
           <div class="file" data-f="format">
             <span class="n x">skip</span>
             <div class="meta"><code>format.go</code><span class="why"><span class="w1 w2">formatting only: nothing left to read</span></span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="width:72%"></i><i class="m" style="width:50%"></i><i class="m" style="width:86%"></i><i class="m" style="width:64%"></i><i class="m" style="width:44%"></i><i class="m" style="width:78%"></i></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="--w:72%"></i><i class="m" style="--w:50%"></i><i class="m" style="--w:86%"></i><i class="m" style="--w:64%"></i><i class="m" style="--w:44%"></i><i class="m" style="--w:78%"></i></div>
           </div>
           <div class="file" data-f="parser">
             <span class="n">2</span>
             <div class="meta"><code>parser.go</code><span class="why"><span class="w1">a rename: 2 set aside</span><span class="w2">parse() gained two branches: read closely</span></span><span class="tag">fixed 3 times this year</span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="width:58%"></i><i class="m" style="width:74%"></i><i class="r" style="width:88%"></i><i class="r" style="width:66%"></i><i class="r" style="width:94%"></i><i class="r" style="width:52%"></i><i class="r" style="width:80%"></i><i class="g" style="width:36%"></i></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="--w:58%"></i><i class="m" style="--w:74%"></i><i class="r" style="--w:88%"></i><i class="r" style="--w:66%"></i><i class="r" style="--w:94%"></i><i class="r" style="--w:52%"></i><i class="r" style="--w:80%"></i><i class="g" style="--w:36%"></i></div>
           </div>
           <div class="file" data-f="token">
             <span class="n">1</span>
             <div class="meta"><code>token.go</code><span class="why"><span class="w1">a moved block: 3 set aside</span><span class="w2">New() gained a branch: read closely · a field: glance</span></span><span class="tag">2 → 3 parameters, 4 callers</span></div>
-            <div class="lines" aria-hidden="true"><i class="m" style="width:68%"></i><i class="m" style="width:84%"></i><i class="m" style="width:56%"></i><i class="g" style="width:76%"></i><i class="r" style="width:92%"></i><i class="r" style="width:60%"></i><i class="r" style="width:42%"></i></div>
+            <div class="lines" aria-hidden="true"><i class="m" style="--w:68%"></i><i class="m" style="--w:84%"></i><i class="m" style="--w:56%"></i><i class="g" style="--w:76%"></i><i class="r" style="--w:92%"></i><i class="r" style="--w:60%"></i><i class="r" style="--w:42%"></i></div>
           </div>
         </div>
         <ul class="key" aria-hidden="true">
@@ -282,14 +280,10 @@ footer strong { color: var(--body); font-weight: 500; }
           <li class="g"><i></i>glance <b>5</b></li>
           <li class="r"><i></i><span class="a">to read <b>13</b></span><span class="bb">read closely <b>8</b></span></li>
         </ul>
+        </div>
+        <div class="bar" aria-hidden="true"><i></i></div>
+        <button class="ctl" type="button" aria-label="Pause"><svg class="pa" viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="1" width="3.5" height="12" rx="1"/><rect x="8.5" y="1" width="3.5" height="12" rx="1"/></svg><svg class="pl" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11a.6.6 0 0 0 .9.5l8.6-5.5a.6.6 0 0 0 0-1L3.9 1a.6.6 0 0 0-.9.5z"/></svg></button>
       </div>
-      <ol class="steps">
-        <li style="--d:3s"><button type="button"><b>The diff</b><span>Four files, 28 lines, all alike.</span></button></li>
-        <li style="--d:4s"><button type="button"><b>Set aside</b><span>Moves, a rename, formatting, imports.</span></button></li>
-        <li style="--d:4.2s"><button type="button"><b>Glance</b><span>Simple code that gained no decision.</span></button></li>
-        <li style="--d:4s"><button type="button"><b>Facts</b><span>What the diff does not show.</span></button></li>
-        <li class="on" style="--d:5.5s"><button type="button"><b>Order</b><span>Definitions before their uses.</span></button></li>
-      </ol>
     </div>
 
     <nav class="toc" aria-label="On this page">
@@ -731,35 +725,53 @@ Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() com
 (() => {
   const d = document.getElementById('demo');
   if (!d) return;
-  const items = [...d.querySelectorAll('.steps li')];
+  const files = [...d.querySelectorAll('.file')];
   const key = { c: d.querySelector('.key .c'), m: d.querySelector('.key .m'), g: d.querySelector('.key .g'), r: d.querySelector('.key .r') };
-  const set = i => {
+  const bar = d.querySelector('.bar i');
+  const ctl = d.querySelector('.ctl');
+  const step = i => {
     d.dataset.step = i;
-    items.forEach((li, k) => {
-      li.classList.toggle('on', k === i);
-      li.classList.toggle('done', k < i);
-      li.querySelector('button').setAttribute('aria-pressed', k === i);
-    });
     key.c.classList.toggle('in', i === 0);
     key.m.classList.toggle('in', i >= 1);
     key.r.classList.toggle('in', i >= 1);
     key.g.classList.toggle('in', i >= 2);
     key.r.classList.toggle('b', i >= 2);
   };
-  items.forEach((li, k) => li.querySelector('button').addEventListener('click', () => set(k)));
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { set(4); return; }
-  let hover = false, away = false;
-  const hold = () => d.classList.toggle('hold', hover || away);
-  d.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { hover = true; hold(); } });
-  d.addEventListener('pointerleave', () => { hover = false; hold(); });
-  d.addEventListener('focusin', e => { if (e.target.matches(':focus-visible')) { hover = true; hold(); } });
-  d.addEventListener('focusout', () => { hover = false; hold(); });
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => { away = !e.isIntersecting; hold(); }, { threshold: .3 }).observe(d);
+  const reset = () => { d.classList.remove('end', 'out'); files.forEach(f => f.classList.remove('in')); step(0); };
+  const cues = [
+    [200, () => files[0].classList.add('in')], [500, () => files[1].classList.add('in')],
+    [800, () => files[2].classList.add('in')], [1100, () => files[3].classList.add('in')],
+    [3600, () => step(1)], [8000, () => step(2)], [12200, () => step(3)], [16200, () => step(4)],
+    [21200, () => d.classList.add('end')], [25200, () => d.classList.add('out')],
+  ];
+  const total = 25800;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    d.classList.add('still', 'end'); files.forEach(f => f.classList.add('in')); step(4); return;
   }
-  d.addEventListener('animationend', e => { if (e.animationName === 'fill') set((+d.dataset.step + 1) % items.length); });
-  d.classList.add('play');
-  set(0);
+  let t0 = performance.now(), elapsed = 0, next = 0, paused = false, away = false, raf = 0;
+  const frame = now => {
+    if (!paused && !away) {
+      elapsed += now - t0;
+      while (next < cues.length && elapsed >= cues[next][0]) cues[next++][1]();
+      if (elapsed >= total) { elapsed = 0; next = 0; reset(); }
+      bar.style.width = (100 * elapsed / total).toFixed(2) + '%';
+    }
+    t0 = now;
+    raf = requestAnimationFrame(frame);
+  };
+  const toggle = () => {
+    paused = !paused;
+    d.classList.toggle('paused', paused);
+    ctl.setAttribute('aria-label', paused ? 'Play' : 'Pause');
+  };
+  d.querySelector('.stage').addEventListener('click', toggle);
+  ctl.addEventListener('click', e => e.stopPropagation() || toggle());
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { away = !e.isIntersecting; }, { threshold: .25 }).observe(d);
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(raf); else { t0 = performance.now(); raf = requestAnimationFrame(frame); } });
+  reset();
+  raf = requestAnimationFrame(frame);
 })();
 </script>
 </body>
