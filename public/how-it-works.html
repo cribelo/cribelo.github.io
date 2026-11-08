@@ -128,11 +128,12 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 
 .demo { --row: 84px; --gap: 10px; display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: 28px; margin: 40px 0 0; padding: 28px; border-radius: 24px; background: var(--tint); }
 .stack { position: relative; height: calc(4 * var(--row) + 3 * var(--gap)); }
-.card { position: absolute; top: 0; left: 0; right: 0; height: var(--row); display: grid; grid-template-columns: 26px minmax(0, 1fr) 32%; align-items: center; gap: 14px; padding: 0 18px 0 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; transform: translateY(calc(var(--y) * (var(--row) + var(--gap)))); transition: transform .8s cubic-bezier(.65, 0, .25, 1), opacity .5s; }
+.card { position: absolute; top: 0; left: 0; right: 0; height: var(--row); display: grid; grid-template-columns: 26px minmax(0, 1fr) 32%; align-items: center; gap: 14px; padding: 0 18px 0 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; transform: translateY(calc(var(--y) * (var(--row) + var(--gap)))); transition: transform .8s cubic-bezier(.65, 0, .25, 1), background .5s; }
 .card[data-f=cli] { --y: 0; } .card[data-f=format] { --y: 1; } .card[data-f=parser] { --y: 2; } .card[data-f=token] { --y: 3; }
 .demo[data-step="3"] .card[data-f=token] { --y: 0; } .demo[data-step="3"] .card[data-f=parser] { --y: 1; }
 .demo[data-step="3"] .card[data-f=cli] { --y: 2; } .demo[data-step="3"] .card[data-f=format] { --y: 3; }
-.demo:not([data-step="0"]) .card[data-f=format] { opacity: .6; }
+.demo:not([data-step="0"]) .card[data-f=format] { background: var(--soft); }
+.demo:not([data-step="0"]) .card[data-f=format] .lines { opacity: .5; }
 .card .n { width: 24px; height: 24px; border-radius: 50%; background: var(--pink); color: #fff; font: 600 12px/24px var(--sans); text-align: center; transform: scale(0); transition: transform .4s cubic-bezier(.3, 1.6, .5, 1); }
 .card .n.x { width: auto; background: none; color: var(--muted); font-weight: 500; font-size: 11px; }
 .demo[data-step="3"] .card .n { transform: scale(1); transition-delay: .6s; }
@@ -144,6 +145,7 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .demo:not([data-step="0"]) .why, .demo[data-step="2"] .tag, .demo[data-step="3"] .tag { max-height: 22px; opacity: 1; transform: none; }
 .demo[data-step="2"] .tag, .demo[data-step="3"] .tag { margin-top: 2px; }
 .lines { display: flex; flex-direction: column; gap: 3px; }
+.lines { transition: opacity .5s; }
 .lines i { display: block; height: 4px; border-radius: 2px; background: var(--chg); transition: background .5s; }
 .lines i:nth-child(2) { transition-delay: .05s; } .lines i:nth-child(3) { transition-delay: .1s; } .lines i:nth-child(4) { transition-delay: .15s; }
 .lines i:nth-child(5) { transition-delay: .2s; } .lines i:nth-child(6) { transition-delay: .25s; } .lines i:nth-child(7) { transition-delay: .3s; } .lines i:nth-child(8) { transition-delay: .35s; }
@@ -157,8 +159,8 @@ figcaption { padding-top: 14px; border-top: 1px solid var(--line); }
 .steps li { margin: 0; }
 .steps button { position: relative; display: block; width: 100%; padding: 11px 14px 14px; overflow: hidden; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .2s; }
 .steps button:hover { background: color-mix(in srgb, var(--bg) 50%, transparent); }
-.steps b { display: block; color: var(--muted); font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
-.steps span { display: block; margin-top: 2px; color: var(--faint); font-size: 13.5px; line-height: 1.4; }
+.steps b { display: block; color: var(--body); font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+.steps span { display: block; margin-top: 2px; color: var(--body); font-size: 13.5px; line-height: 1.4; }
 .steps .on button { background: var(--bg); }
 .steps .on b { color: var(--ink); }
 .steps .on span { color: var(--body); }
@@ -207,7 +209,7 @@ footer strong { color: var(--body); font-weight: 500; }
 </head>
 <body>
 <div class="wrap">
-  <nav>
+  <nav aria-label="Main">
     <a class="brand" href="./"><img src="assets/favicon.png" width="26" height="26" alt="">cribelo</a>
     <div>
       <a href="how-it-works.html" aria-current="page">How it works</a>
@@ -265,7 +267,7 @@ footer strong { color: var(--body); font-weight: 500; }
     <h2 id="passes">From the diff to the plan</h2>
     <p>The change is the diff between the merge base of your branch and your working tree. Generated files, lock files and binaries are set aside. The rest is parsed before and after the change with the tree-sitter parsers of AST Metrics, then goes through three passes.</p>
     <figure>
-      <div class="scroll">
+      <div class="scroll" tabindex="0">
       <svg viewBox="0 0 760 112" role="img" aria-label="The diff goes through three passes: hunks, then facts, then order.">
         <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
         <rect class="box" x="0" y="18" width="150" height="76" rx="14"/>
@@ -302,7 +304,7 @@ footer strong { color: var(--body); font-weight: 500; }
       </tbody>
     </table>
     <figure>
-      <div class="scroll">
+      <div class="scroll" tabindex="0">
       <svg viewBox="0 0 760 392" role="img" aria-label="A diff of four hunks: imports, a moved function with one new line, a rename and a behavior change. 28 lines changed, 13 to read.">
         <rect class="skip" x="560" y="4" width="12" height="12" rx="3"/><text class="s" x="578" y="15">set aside</text>
         <rect class="read" x="660" y="4" width="12" height="12" rx="3"/><text class="s" x="678" y="15">to read</text>
@@ -357,7 +359,7 @@ footer strong { color: var(--body); font-weight: 500; }
     <h3>Read closely, or glance at</h3>
     <p>The code lines left are then split by what holds them. A line in a function that gained no decision and stays simple (cyclomatic complexity at most 3 after the change) is glanced at. So is a line outside every function, a declaration, a field, a constant, unless it branches itself. A line in a function that gained a branch, or in a function that was already complex, is read closely. The check of a rename and the look at where a block went are glances too. Reading time counts twenty lines read closely a minute, sixty glanced at.</p>
     <figure>
-      <div class="scroll">
+      <div class="scroll" tabindex="0">
       <svg viewBox="0 0 760 300" role="img" aria-label="One file after the change: a new struct with four fields, a getter with one path, and a parse function that gained two branches. Fields and getter are glanced at, parse is read closely.">
         <rect class="skip" x="560" y="4" width="12" height="12" rx="3"/><text class="s" x="578" y="15">glance at</text>
         <rect class="read" x="660" y="4" width="12" height="12" rx="3"/><text class="s" x="678" y="15">read closely</text>
@@ -393,7 +395,7 @@ footer strong { color: var(--body); font-weight: 500; }
       <figcaption>The rule holds whatever the file: a complex function in a leaf file is read, a getter in a hub is glanced at. Measured on the bench, functions that gained no decision and stay simple are repaired half as often as the others; the reach of a file made no difference.</figcaption>
     </figure>
     <figure>
-      <div class="scroll">
+      <div class="scroll" tabindex="0">
       <svg viewBox="0 0 760 236" role="img" aria-label="A function block leaves TypeSpecifier.php and lands in LegacyTypeSpecifier.php with two new lines. Git shows a deletion and an addition; Cribelo shows the move and the two lines.">
         <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
         <rect class="file" x="0" y="24" width="300" height="196" rx="14"/>
@@ -434,7 +436,7 @@ footer strong { color: var(--body); font-weight: 500; }
     <h2 id="facts">Facts</h2>
     <p>The second pass looks for what the diff does not show. A fact is something a reader can check in a minute. Cribelo computes the import graph of the repository before and after the change and compares them, asks git for the history of each touched function, and reads your coverage report. None is a prediction. At most one fact of each kind per file.</p>
     <figure>
-      <div class="scroll">
+      <div class="scroll" tabindex="0">
       <svg viewBox="0 0 760 232" role="img" aria-label="Before the change, billing.go imports invoice.go, which imports tax.go. The change makes tax.go import billing.go, which closes a cycle.">
         <defs>
           <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker>
@@ -539,7 +541,7 @@ footer strong { color: var(--body); font-weight: 500; }
     <h2 id="order">Order</h2>
     <p>The third pass puts the files in reading order. The files to read are grouped. Two files are in one group when one imports the other, or, in one directory, when one calls a function the other declares. Inside a group, a file comes before the files that use it: you read the definition before its uses, the rule of Baum and colleagues (2017). Each test comes right after the file it exercises, and a test that sits next to changed code is matched in its own directory only. Groups carrying a cycle, a signature change, a fix record, a first dependency or a clone come first, then the best score, then size.</p>
     <figure>
-      <div class="scroll">
+      <div class="scroll" tabindex="0">
       <svg viewBox="0 0 760 248" role="img" aria-label="parser.go uses token.go and cli.go uses both. Reading order: token.go, its test, parser.go, cli.go.">
         <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
         <path class="ln" d="M665 74C665 14 95 14 95 72" marker-end="url(#a4)"/>
@@ -572,7 +574,7 @@ footer strong { color: var(--body); font-weight: 500; }
     <h3>Under a budget</h3>
     <p><code>cribelo --budget 30m</code> fills the time with the best-ranked files first, at twenty lines read closely a minute and sixty glanced at, and adds a test only while it fits. What does not fit is listed under Skip as ranked lower, with everything it knows about it.</p>
     <figure>
-      <div class="scroll">
+      <div class="scroll" tabindex="0">
       <svg viewBox="0 0 760 132" role="img" aria-label="A thirty-minute budget filled by token.go, its test, parser.go and util.go; cli.go does not fit and is skipped.">
         <path class="ln" d="M20 96H640" marker-end="url(#ar)"/>
         <text class="s" x="20" y="118">0</text><text class="s" x="220" y="118" text-anchor="middle">10 min</text><text class="s" x="420" y="118" text-anchor="middle">20 min</text><text class="s" x="620" y="118" text-anchor="middle">30 min</text>
@@ -590,7 +592,7 @@ footer strong { color: var(--body); font-weight: 500; }
 
     <h2 id="output">The plan</h2>
     <p><code>cribelo</code> prints the plan in the terminal. <code>cribelo describe</code> prints the same in Markdown, ready for the pull request description. The GitHub Action posts one comment per pull request and updates it on each push. Here is the plan of <a href="https://github.com/ast-metrics/ast-metrics/pull/196">pull request #196 of AST Metrics</a>, trimmed to its first files.</p>
-<pre class="term"><span class="ps">$</span> cribelo
+<pre class="term" tabindex="0" aria-label="Terminal output of cribelo on pull request 196"><span class="ps">$</span> cribelo
 <span class="head">cribelo</span> <span class="dim">· 34 files changed vs origin/main (merge-base b2f83dc)</span>
 
 <span class="head">Read 14 of 34 changed files, about 48 min.</span>

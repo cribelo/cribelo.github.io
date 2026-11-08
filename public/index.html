@@ -41,7 +41,7 @@
 :root {
   --bg: #fff; --ink: #0d1117; --body: #48515c; --muted: #68717c; --faint: #8b949e; --soft: #f5f6f8; --line: #e3e6ea;
   --pink: #ec6f96; --pink-text: #b3245c; --inv-accent: #ff9dbb;
-  --g0: #eaf3ec; --g1: #c9e9d1; --g2: #93d6a4; --tint: #fcf0f4; --mark: rgba(236,111,150,.5); --hot: #d6487a;
+  --g0: #eaf3ec; --g1: #c9e9d1; --g2: #93d6a4; --tint: #fcf0f4; --mark: rgba(236,111,150,.5); --hot: #c2386a;
   --sans: Geist, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -106,11 +106,11 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .play { padding-bottom: clamp(96px, 16vh, 180px); }
 .time { position: relative; display: inline-flex; max-width: 100%; margin-top: 30px; padding: 6px; border-radius: 99px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); overflow-x: auto; scrollbar-width: none; }
 .time[hidden] { display: none; }
-.time .knob { position: absolute; top: 6px; left: 0; height: calc(100% - 12px); width: 0; border-radius: 99px; background: var(--pink); box-shadow: 0 6px 18px -6px var(--pink); transition: transform .45s cubic-bezier(.3,1.35,.5,1), width .45s cubic-bezier(.3,1.35,.5,1); pointer-events: none; }
+.time .knob { position: absolute; top: 6px; left: 0; height: calc(100% - 12px); width: 0; border-radius: 99px; background: var(--hot); box-shadow: 0 6px 18px -6px var(--pink); transition: transform .45s cubic-bezier(.3,1.35,.5,1), width .45s cubic-bezier(.3,1.35,.5,1); pointer-events: none; }
 .time button { position: relative; flex: none; padding: 12px clamp(14px, 2vw, 26px); border: 0; border-radius: 99px; background: none; color: var(--body); font: 600 clamp(1rem, 2vw, 1.45rem)/1.1 var(--sans); letter-spacing: -.025em; white-space: nowrap; cursor: pointer; transition: color .3s, background .2s; }
 .time button:hover { color: var(--ink); background: var(--line); }
 .time button[aria-pressed="true"], .time button[aria-pressed="true"]:hover { color: #fff; background: none; }
-.time:not(.ready) button[aria-pressed="true"] { background: var(--pink); }
+.time:not(.ready) button[aria-pressed="true"] { background: var(--hot); }
 @media (prefers-reduced-motion: reduce) { .time .knob { transition: none; } }
 @media (max-width: 520px) { .time { padding: 4px; } .time .knob { top: 4px; height: calc(100% - 8px); } .time button { padding: 10px 9px; font-size: 15px; letter-spacing: -.01em; } }
 .board { display: grid; grid-template-columns: 192px minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); margin-top: clamp(40px, 7vh, 72px); align-items: start; }
@@ -125,7 +125,7 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .term .bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: #161b22; border-bottom: 1px solid #262d37; }
 .term .bar i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
 .term .bar i:nth-child(2) { background: #febc2e; } .term .bar i:nth-child(3) { background: #28c840; }
-.term .bar span { flex: 1; margin-right: 32px; text-align: center; color: #6e7886; font-size: 12.5px; }
+.term .bar span { flex: 1; margin-right: 32px; text-align: center; color: #8b949e; font-size: 12.5px; }
 .term .cmd { display: flex; align-items: center; gap: 12px; padding: 18px 20px 0; }
 .term .cmd code { flex: 1; min-width: 0; color: #f2f5f8; font-size: 15px; font-weight: 500; white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
 .term .ps { color: #ff9dbb; user-select: none; }
@@ -152,7 +152,7 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .k2 { color: #ff7b72; font-weight: 700; } .k1 { color: #d29922; } .k0 { color: #3fb950; }
 .pa { color: #79c0ff; } .nw { color: #58a6ff; font-weight: 700; } .tg { color: #8a93a3; }
 .b1 { color: #3fb950; } .b2 { color: #d29922; } .b3 { color: #f0883e; } .b4, .b5, .bad { color: #ff7b72; } .em { color: #3b4252; } .or { color: #f0883e; }
-.more { min-height: 1.6em; margin-top: 2px; padding-left: 5ch; color: #6e7886; }
+.more { min-height: 1.6em; margin-top: 2px; padding-left: 5ch; color: #8b949e; }
 .caption { margin-top: 44px; color: var(--muted); font-size: 14px; }
 
 .dark { background: var(--ink); color: var(--bg); padding: clamp(110px, 20vh, 220px) 0; }
@@ -207,7 +207,7 @@ footer strong { color: var(--body); font-weight: 500; }
 <script>document.documentElement.classList.add('js');</script>
 
 <div class="wrap">
-  <nav>
+  <nav aria-label="Main">
     <a class="brand" href="./"><img src="assets/favicon.png" width="26" height="26" alt="">cribelo</a>
     <div>
       <a href="how-it-works.html">How it works</a>
@@ -268,7 +268,7 @@ footer strong { color: var(--body); font-weight: 500; }
             <p class="head" id="summary">Read 14 of 34 changed files, about 48 min.</p>
             <p id="lines">1035 of 1771 changed lines to read closely, 369 to glance at: 11 import hunks.</p>
             <p id="start">Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() complexity 17, +4 more, imported by 83 files.</p>
-            <div class="tbl"><table><thead id="thead"></thead><tbody id="rows"></tbody></table></div>
+            <div class="tbl" tabindex="0"><table><thead id="thead"></thead><tbody id="rows"></tbody></table></div>
             <p class="more" id="more"></p>
             <p class="head">Worth knowing <span class="dim">&nbsp;true by construction, not predicted</span></p>
             <div id="facts"></div>
