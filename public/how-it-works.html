@@ -107,7 +107,7 @@ svg marker.pinkm path { fill: var(--pink); }
 .term { margin: 24px 0 10px; padding: 18px 20px 20px; overflow-x: auto; border: 1px solid #262d37; border-radius: 16px; background: #0b0e13; color: #d6dbe5; font: 12.5px/1.6 var(--mono); scrollbar-width: thin; scrollbar-color: #3a434f transparent; }
 .term .ps { color: #ff9dbb; }
 .term .dim { color: #8a93a3; }
-.term .head { color: #fff; font-weight: 700; }
+.term .head { display: inline; height: auto; margin: 0; color: #fff; font-weight: 700; }
 .term .pa { color: #79c0ff; }
 .term .k0 { color: #3fb950; } .term .bad { color: #ff7b72; }
 .pre { margin: 0 0 20px; padding: 18px 22px; overflow-x: auto; background: var(--soft); border-radius: 16px; color: var(--body); font: 13.5px/1.6 var(--mono); }
@@ -653,35 +653,42 @@ footer strong { color: var(--body); font-weight: 500; }
 <pre class="term" tabindex="0" aria-label="Terminal output of cribelo on pull request 196"><span class="ps">$</span> cribelo
 <span class="head">cribelo</span> <span class="dim">· 34 files changed vs origin/main (merge-base b2f83dc)</span>
 
-<span class="head">Read 14 of 34 changed files, about 48 min.</span>
-1035 of 1771 changed lines to read closely, 369 to glance at: 11 import hunks.
-Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() complexity 17, +4 more, imported by 83 files.
+<span class="head">Read 13 of 34 changed files, about 45 min.</span>
 
-                                                           complexity  to read           glance    used by    commits 90d        clone  tests
-      <span class="dim">↳ library_reach.go, then what uses it</span>
-   1  <span class="pa">internal/analyzer/library_reach.go</span>             new   ▮▮▮▯▯ 17    ▮▮▮▯▯ 155 of 266  ▮▮▯▯▯ 54  ▮▮▮▮▮ 83   ▮▮▯▯▯ 3                   <span class="k0">✓</span>
-   2  <span class="pa">internal/analyzer/library_conformance_test.go</span>  test  ▮▮▮▯▯ 12    ▮▯▯▯▯ 38 of 144   ▮▮▯▯▯ 77  ▯▯▯▯▯      ▮▯▯▯▯ 1                   
-   3  <span class="pa">internal/analyzer/library_reach_test.go</span>        test  ▮▯▯▯▯ 4     ▮▮▯▯▯ 99 of 146   ▮▯▯▯▯ 30  ▯▯▯▯▯      ▮▯▯▯▯ 2                   
-   4  <span class="pa">internal/engine/util.go</span>                              ▮▮▯▯▯ 10    ▮▯▯▯▯ 27 of 32    ▮▯▯▯▯ 2   ▮▮▮▮▮ 111  ▮▮▮▯▯ 6, <span class="bad">3 fixes</span>          <span class="bad">✗</span>
-   5  <span class="pa">internal/analyzer/file_dependency_analyzer.go</span>        ▮▮▮▮▮ 44    ▮▮▯▯▯ 53 of 67    ▮▯▯▯▯ 3   ▮▮▮▮▮ 83   ▮▮▯▯▯ 4, <span class="bad">1 fix</span>            <span class="k0">✓</span>
-   6  <span class="pa">internal/engine/php/deps/resolver.go</span>           new   ▮▮▯▯▯ 9     ▮▯▯▯▯ 23 of 77    ▮▯▯▯▯ 27  ▮▯▯▯▯ 1    ▮▯▯▯▯ 1            <span class="bad">84%</span>    <span class="k0">✓</span>
-   7  <span class="pa">internal/engine/php/deps/resolver_test.go</span>      test  ▮▯▯▯▯ 5     ▮▯▯▯▯ 37 of 57    ▮▯▯▯▯ 9   ▯▯▯▯▯      ▮▯▯▯▯ 1                   
-   8  <span class="pa">internal/engine/java/deps/resolver.go</span>                ▮▮▮▯▯ 11    ▮▯▯▯▯ 11 of 18    ▮▯▯▯▯ 3   ▮▯▯▯▯ 1    ▮▮▯▯▯ 3, <span class="bad">1 fix</span>     <span class="bad">100%</span>   <span class="k0">✓</span>
-      <span class="dim">… 6 more</span>
+<span class="dim">                                                           lines to read closely               lines to glance at</span>
+   1  <span class="pa">internal/analyzer/library_reach.go</span>             new   30-35, 66-265                       <span class="dim">16-26, 39-57</span>
+   2  <span class="pa">internal/analyzer/library_conformance_test.go</span>  test  98-140                              <span class="dim">25-93</span>
+   3  <span class="pa">internal/analyzer/library_reach_test.go</span>        test  10-63, 85-144                       <span class="dim">67-80</span>
+   4  <span class="pa">internal/engine/util.go</span>                              85-112
+   5  <span class="pa">internal/analyzer/file_dependency_analyzer.go</span>        97-101, 122-127, 141, 152, +4 more  <span class="dim">22-27</span>
+   6  <span class="pa">internal/engine/php/deps/resolver.go</span>           new   25-43, 57-69                        <span class="dim">15-22, 46-51, 75-76</span>
+   7  <span class="pa">internal/engine/php/deps/resolver_test.go</span>      test  11-54
+   8  <span class="pa">internal/engine/java/deps/resolver.go</span>                46-48, 65-71                        <span class="dim">line 61</span>
+      <span class="dim">… 5 more</span>
 
-<span class="head">Worth knowing</span>  <span class="dim">true by construction, not predicted</span>
-  <span class="pa">cmd/ast-metrics/main.go</span>  main() was fixed 5 times in the past year
+<span class="head">Why these files</span>
+<span class="dim">                                   complexity  used by    commits 90d        clone  test changed</span>
+   1  <span class="pa">library_reach.go</span>             ▮▮▮▯▯ 17    ▮▮▮▮▮ 83   ▮▮▯▯▯ 3                   <span class="k0">✓</span>
+   4  <span class="pa">util.go</span>                      ▮▮▯▯▯ 10    ▮▮▮▮▮ 111  ▮▮▮▯▯ 6<span class="bad">, 3 fixes</span>          <span class="bad">✗</span>
+   5  <span class="pa">file_dependency_analyzer.go</span>  ▮▮▮▮▮ 44    ▮▮▮▮▮ 83   ▮▮▯▯▯ 4<span class="bad">, 1 fix</span>            <span class="k0">✓</span>
+   6  <span class="pa">php/deps/resolver.go</span>         ▮▮▯▯▯ 9     ▮▯▯▯▯ 1    ▮▯▯▯▯ 1            <span class="bad">84%</span>    <span class="k0">✓</span>
+   8  <span class="pa">java/deps/resolver.go</span>        ▮▮▮▯▯ 11    ▮▯▯▯▯ 1    ▮▮▯▯▯ 3<span class="bad">, 1 fix</span>     <span class="bad">100%</span>   <span class="k0">✓</span>
+      <span class="dim">… 3 more</span>
+
+<span class="head">Totals</span>  688 lines to read closely, 280 to glance at<span class="dim"> (20 and 60 lines a minute)</span>
+<span class="dim">Set aside in the whole change: 11 import hunks.</span>
+
+<span class="head">Worth knowing</span><span class="dim">  true by construction, not predicted</span>
   <span class="pa">internal/analyzer/aggregator.go</span>  internal/analyzer depends on internal/engine/php/deps for the first time
   <span class="pa">internal/engine/typescript/deps/resolver.go</span>  internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time
-  <span class="pa">cmd/ast-metrics/main.go</span>  38 of 38 changed lines not run by any test, by pr196-coverage.out
-  <span class="pa">internal/analyzer/library_reach.go</span>  15 of 161 changed lines not run by any test, by pr196-coverage.out
-  <span class="pa">internal/command/who_uses_command.go</span>  49 of 162 changed lines not run by any test, by pr196-coverage.out
-  +1 more, see cribelo explain &lt;file&gt;
+  <span class="pa">internal/analyzer/library_reach.go</span>  15 of 161 changed lines not run by any test, according to pr196-coverage.out
+  <span class="pa">internal/command/who_uses_command.go</span>  49 of 162 changed lines not run by any test, according to pr196-coverage.out
+  <span class="pa">internal/engine/util.go</span>  25 of 25 changed lines not run by any test, according to pr196-coverage.out
 
-<span class="head">Skip (20)</span>
-  ranked lower 9 · tests only 7 · no measurable change 4    <span class="dim">cribelo skip</span>
+<span class="head">Skip (21)</span>
+  10 ranked lower · 7 tests only · 4 no measurable change<span class="dim">    cribelo skip</span>
 </pre>
-    <p>Each column is a measure you can check: cyclomatic complexity of the touched functions, lines to read closely out of lines changed, lines to glance at, files that import this one, commits and fix commits in the last ninety days, similarity with another function, a test file next to it.</p>
+    <p>The first table says where to read: for each file, the line ranges to read closely and the ones a glance is enough for. In the pull request comment, each range opens the diff on those lines. Under it, each column is a measure you can check: cyclomatic complexity of the touched functions, files that import this one, commits and fix commits in the last ninety days, similarity with another function, a test changed with the file.</p>
     <h3>A gate on what is measured</h3>
     <p>Nothing here fails a build on its own. In the Action, <code>fail-over: 1h</code> fails the job when reading the whole change would take more than an hour, every file counted, budget or not: the change is too large for one reviewer. <code>fail-on: cycle, signature</code> fails it when the change introduces an import cycle or changes an exported signature that other files call; any kind of fact can be named. The job says why in one line, such as "reading time 1 h 17, over the 1 h allowed". The score never closes a gate: a level is an estimate, a gate needs a measure.</p>
 

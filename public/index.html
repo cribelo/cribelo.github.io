@@ -140,7 +140,7 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .out .gap { margin-top: 16px; }
 .out .fact { padding-left: 2ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .out .fact .pa { margin-right: 2ch; }
-.tbl { min-height: 230px; margin: 18px -20px 0; padding: 0 20px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #3a434f transparent; }
+.tbl { margin: 18px -20px 0; padding: 0 20px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #3a434f transparent; }
 .tbl table { border-collapse: collapse; white-space: nowrap; font-size: 12.5px; }
 .tbl th { padding: 0 0 2px 1.6ch; color: #8a93a3; font-weight: 400; text-align: left; }
 .tbl td { padding: 1px 0 1px 1.6ch; }
@@ -148,11 +148,13 @@ h2 { font-size: clamp(2.8rem, 7.4vw, 6.2rem); }
 .tbl td:nth-child(2) { padding-left: 2ch; }
 .tbl tr { transition: background .15s; }
 .tbl tbody tr.hot { background: rgba(255,255,255,.08); }
-.tbl tr.grp td { padding: 6px 0 2px 3ch; color: #8a93a3; font-style: italic; text-align: left; }
+.head + .tbl { margin-top: 0; }
+.out .strong { color: #fff; }
 .k2 { color: #ff7b72; font-weight: 700; } .k1 { color: #d29922; } .k0 { color: #3fb950; }
 .pa { color: #79c0ff; } .nw { color: #58a6ff; font-weight: 700; } .tg { color: #8a93a3; }
 .b1 { color: #3fb950; } .b2 { color: #d29922; } .b3 { color: #f0883e; } .b4, .b5, .bad { color: #ff7b72; } .em { color: #3b4252; } .or { color: #f0883e; }
-.more { min-height: 1.6em; margin-top: 2px; padding-left: 5ch; color: #8b949e; }
+.more { margin-top: 2px; padding-left: 5ch; color: #8b949e; }
+.more:empty { display: none; }
 .caption { margin-top: 44px; color: var(--muted); font-size: 14px; }
 
 .dark { background: var(--ink); color: var(--bg); padding: clamp(110px, 20vh, 220px) 0; }
@@ -285,14 +287,19 @@ footer strong { color: var(--body); font-weight: 500; }
           <div class="out" aria-live="polite">
             <p><b>cribelo</b> <span class="dim">· 34 files changed vs origin/main (merge-base b2f83dc)</span></p>
             <p class="head" id="summary">Read 13 of 34 changed files, about 45 min.</p>
-            <p id="lines">1035 of 1771 changed lines to read closely, 369 to glance at: 11 import hunks.</p>
-            <p id="start">Start with internal/analyzer/library_reach.go: +266 lines, new LibraryUses() complexity 17, +4 more, imported by 83 files.</p>
             <div class="tbl" tabindex="0"><table><thead id="thead"></thead><tbody id="rows"></tbody></table></div>
             <p class="more" id="more"></p>
+            <div id="whyblock">
+              <p class="head">Why these files</p>
+              <div class="tbl" tabindex="0"><table><thead id="whyhead"></thead><tbody id="why"></tbody></table></div>
+              <p class="more" id="whymore"></p>
+            </div>
+            <p class="gap"><b class="strong">Totals</b>&nbsp; <span id="totals">688 lines to read closely, 280 to glance at</span> <span class="dim">(20 and 60 lines a minute)</span></p>
+            <p class="dim">Set aside in the whole change: 11 import hunks.</p>
             <p class="head">Worth knowing <span class="dim">&nbsp;true by construction, not predicted</span></p>
             <div id="facts"></div>
             <p class="head">Skip (<span id="skipn">21</span>)</p>
-            <p>&nbsp;&nbsp;<span id="skipwhy">ranked lower 10 · tests only 7 · no measurable change 4</span><span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;cribelo skip</span></p>
+            <p>&nbsp;&nbsp;<span id="skipwhy">10 ranked lower · 7 tests only · 4 no measurable change</span><span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;cribelo skip</span></p>
           </div>
         </div>
       </div>
@@ -358,13 +365,12 @@ jobs:
 </div>
 
 <script>
-var FILES = [{"p":"cmd/ast-metrics/main.go","lv":1,"n":0,"cx":127,"rd":60,"ln":63,"af":0,"ch":3,"fx":0,"cl":0,"ut":1,"gl":0,"r":"main() complexity 118 \u2192 127, +63 lines, no test touched"},{"p":"internal/analyzer/aggregator.go","lv":1,"n":0,"cx":1,"rd":0,"ln":2,"af":83,"ch":10,"fx":7,"cl":0,"ut":0,"gl":1,"r":"imported by 83 files, fixed 7\u00d7 in 90 days, 10 commits in 90 days"},{"p":"internal/analyzer/community_aggregator.go","lv":2,"n":0,"cx":5,"rd":13,"ln":24,"af":83,"ch":11,"fx":2,"cl":0,"ut":0,"gl":5,"r":"imported by 83 files, +24 lines, new fileCommunitiesOf() complexity 5"},{"p":"internal/analyzer/community_graph.go","lv":2,"n":0,"cx":51,"rd":12,"ln":18,"af":83,"ch":2,"fx":0,"cl":0,"ut":0,"gl":2,"r":"imported by 83 files, new addFile() complexity 4, +18 lines"},{"p":"internal/analyzer/file_dependency_analyzer.go","lv":2,"n":0,"cx":44,"rd":53,"ln":67,"af":83,"ch":4,"fx":1,"cl":0,"ut":0,"gl":3,"r":"imported by 83 files, +64/\u22123 lines, resolveFileDependencies() complexity 29 \u2192 44"},{"p":"internal/analyzer/library_conformance_test.go","lv":0,"n":1,"cx":12,"rd":38,"ln":144,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":77,"r":"","t":1},{"p":"internal/analyzer/library_reach.go","lv":2,"n":1,"cx":17,"rd":155,"ln":266,"af":83,"ch":3,"fx":0,"cl":0,"ut":0,"gl":54,"r":"+266 lines, new LibraryUses() complexity 17, +4 more, imported by 83 files"},{"p":"internal/analyzer/library_reach_test.go","lv":0,"n":1,"cx":4,"rd":99,"ln":146,"af":0,"ch":2,"fx":0,"cl":0,"ut":0,"gl":30,"r":"","t":1},{"p":"internal/analyzer/ruleset/rule_coupling.go","lv":1,"n":0,"cx":10,"rd":26,"ln":34,"af":6,"ch":1,"fx":1,"cl":0,"ut":0,"gl":3,"r":"+25/\u22129 lines, new forbiddenName() complexity 5, imported by 6 files"},{"p":"internal/analyzer/ruleset/rule_coupling_test.go","lv":0,"u":1},{"p":"internal/command/who_uses_command.go","lv":2,"n":1,"cx":18,"rd":134,"ln":242,"af":3,"ch":3,"fx":1,"cl":0,"ut":0,"gl":47,"r":"+242 lines, new printReach() complexity 18, +6 more, imported by 3 files"},{"p":"internal/command/who_uses_command_test.go","lv":0,"n":1,"cx":10,"rd":81,"ln":116,"af":0,"ch":2,"fx":0,"cl":0,"ut":0,"gl":16,"r":"","t":1},{"p":"internal/engine/csharp/deps/resolver.go","lv":1,"n":0,"cx":11,"rd":7,"ln":13,"af":1,"ch":3,"fx":1,"cl":100,"ut":0,"gl":2,"r":"ForFiles() 100% similar to internal/engine/java/deps/resolver.go:ForFiles(), +13 lines, ForFiles() complexity 9 \u2192 11, +1 more"},{"p":"internal/engine/csharp/deps/resolver_test.go","lv":0,"u":1},{"p":"internal/engine/dependency/relative.go","lv":1,"n":1,"cx":5,"rd":7,"ln":20,"af":15,"ch":1,"fx":0,"cl":0,"ut":0,"gl":5,"r":"imported by 15 files, +20 lines, new IsRelative() complexity 5"},{"p":"internal/engine/dependency/relative_test.go","lv":0,"u":1},{"p":"internal/engine/dependency/resolver.go","lv":0,"n":0,"cx":0,"rd":0,"ln":17,"af":15,"ch":3,"fx":1,"cl":0,"ut":0,"gl":6,"r":"imported by 15 files, +17 lines, fixed 1\u00d7 in 90 days"},{"p":"internal/engine/golang/deps/resolver.go","lv":1,"n":0,"cx":7,"rd":13,"ln":32,"af":1,"ch":4,"fx":2,"cl":0,"ut":0,"gl":8,"r":"+31/\u22121 lines, new IsStandardLibrary() complexity 3, +1 more, fixed 2\u00d7 in 90 days"},{"p":"internal/engine/golang/deps/resolver_test.go","lv":0,"u":1},{"p":"internal/engine/golang/module/module.go","lv":1,"n":0,"cx":5,"rd":14,"ln":19,"af":2,"ch":2,"fx":1,"cl":0,"ut":1,"gl":2,"r":"+19 lines, new ModulePathOf() complexity 5, no test touched"},{"p":"internal/engine/java/deps/resolver.go","lv":2,"n":0,"cx":11,"rd":11,"ln":18,"af":1,"ch":3,"fx":1,"cl":100,"ut":0,"gl":3,"r":"ForFiles() 100% similar to internal/engine/csharp/deps/resolver.go:ForFiles(), +18 lines, new IsStandardLibrary() complexity 4, +1 more"},{"p":"internal/engine/java/deps/resolver_test.go","lv":0,"n":1,"cx":3,"rd":5,"ln":16,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":5,"r":"","t":1},{"p":"internal/engine/php/deps/resolver.go","lv":2,"n":1,"cx":9,"rd":23,"ln":77,"af":1,"ch":1,"fx":0,"cl":84,"ut":0,"gl":27,"r":"+77 lines, new ForFiles() complexity 9, +1 more, ForFiles() 84% similar to internal/engine/csharp/deps/resolver.go:ForFiles()"},{"p":"internal/engine/php/deps/resolver_test.go","lv":0,"n":1,"cx":5,"rd":37,"ln":57,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":9,"r":"","t":1},{"p":"internal/engine/rust/deps/resolver.go","lv":0,"n":0,"cx":3,"rd":9,"ln":15,"af":1,"ch":3,"fx":1,"cl":0,"ut":0,"gl":3,"r":"+15 lines, new IsStandardLibrary() complexity 3, fixed 1\u00d7 in 90 days"},{"p":"internal/engine/rust/deps/resolver_test.go","lv":0,"u":1},{"p":"internal/engine/typescript/deps/resolver.go","lv":1,"n":0,"cx":9,"rd":41,"ln":68,"af":1,"ch":2,"fx":1,"cl":0,"ut":0,"gl":12,"r":"+67/\u22121 lines, new IsLibrary() complexity 9, +2 more, fixed 1\u00d7 in 90 days"},{"p":"internal/engine/typescript/deps/resolver_test.go","lv":0,"u":1},{"p":"internal/engine/util.go","lv":2,"n":0,"cx":10,"rd":27,"ln":32,"af":111,"ch":6,"fx":3,"cl":0,"ut":0,"gl":2,"r":"imported by 111 files, +32 lines, new GetInterfacesInFile() complexity 10"},{"p":"internal/mcp/server.go","lv":0,"n":0,"cx":1,"rd":0,"ln":1,"af":1,"ch":1,"fx":0,"cl":0,"ut":0,"gl":1,"r":"imported by 1 file, +1 lines, 1 commit in 90 days"},{"p":"internal/mcp/server_test.go","lv":0,"u":1},{"p":"internal/mcp/tools_deps.go","lv":0,"n":0,"cx":8,"rd":38,"ln":55,"af":1,"ch":1,"fx":0,"cl":0,"ut":0,"gl":12,"r":"+55 lines, new handleWhoUses() complexity 8, imported by 1 file"},{"p":"internal/report/json_report_generator.go","lv":0,"n":0,"cx":12,"rd":1,"ln":1,"af":6,"ch":2,"fx":0,"cl":0,"ut":1,"gl":0,"r":"imported by 6 files, buildReport() complexity 12, no test touched"},{"p":"internal/report/types.go","lv":0,"n":0,"cx":0,"rd":0,"ln":4,"af":6,"ch":2,"fx":0,"cl":0,"ut":1,"gl":1,"r":"imported by 6 files, +4 lines, no test touched"}];
-var PLANS = {"5":{"m":9,"read":[6],"why":"ranked lower 17 \u00b7 tests only 12 \u00b7 no measurable change 4","sk":{"0":"ranked lower","1":"no measurable change","2":"ranked lower","3":"ranked lower","4":"ranked lower","8":"ranked lower","10":"ranked lower","12":"ranked lower","14":"ranked lower","16":"ranked lower","17":"ranked lower","19":"ranked lower","20":"ranked lower","22":"ranked lower","24":"ranked lower","26":"ranked lower","28":"ranked lower","29":"no measurable change","31":"ranked lower","32":"no measurable change","33":"no measurable change","5":"tests only","7":"tests only","9":"tests only","11":"tests only","13":"tests only","15":"tests only","18":"tests only","21":"tests only","23":"tests only","25":"tests only","27":"tests only","30":"tests only"},"gate":[8,8],"groups":[{"files":[6],"head":""}],"facts":[{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, by pr196-coverage.out"}],"lines":[1035,369,1771],"mech":"11 import hunks"},"30":{"m":30,"read":[6,28,4,22,20,10,0,2,3],"why":"tests only 12 \u00b7 ranked lower 9 \u00b7 no measurable change 4","sk":{"1":"no measurable change","8":"ranked lower","12":"ranked lower","14":"ranked lower","16":"ranked lower","17":"ranked lower","19":"ranked lower","24":"ranked lower","26":"ranked lower","29":"no measurable change","31":"ranked lower","32":"no measurable change","33":"no measurable change","5":"tests only","7":"tests only","9":"tests only","11":"tests only","13":"tests only","15":"tests only","18":"tests only","21":"tests only","23":"tests only","25":"tests only","27":"tests only","30":"tests only"},"gate":[8,8],"groups":[{"files":[6,28,4,22,20,10,0,2,3],"head":"library_reach.go, then what uses it"}],"facts":[{"p":"cmd/ast-metrics/main.go","t":"main() was fixed 5 times in the past year"},{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"cmd/ast-metrics/main.go","t":"38 of 38 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, by pr196-coverage.out"}],"lines":[1035,369,1771],"mech":"11 import hunks"},"60":{"m":60,"read":[6,5,7,28,8,9,19,14,15,31,16,4,22,23,20,21,12,26,17,24,10,0,2,3],"why":"tests only 6 \u00b7 no measurable change 4","sk":{"1":"no measurable change","29":"no measurable change","32":"no measurable change","33":"no measurable change","11":"tests only","13":"tests only","18":"tests only","25":"tests only","27":"tests only","30":"tests only"},"gate":[8,8],"groups":[{"files":[6,5,7,28,8,9,19,14,15,31,16,4,22,23,20,21,12,26,17,24,10,0,2,3],"head":"library_reach.go, then what uses it"}],"facts":[{"p":"cmd/ast-metrics/main.go","t":"main() was fixed 5 times in the past year"},{"p":"internal/analyzer/ruleset/rule_coupling.go","t":"CheckFile() was fixed 2 times in the past year"},{"p":"internal/engine/golang/deps/resolver.go","t":"ForFiles() was fixed 2 times in the past year"},{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"cmd/ast-metrics/main.go","t":"38 of 38 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/csharp/deps/resolver.go","t":"4 of 7 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/golang/module/module.go","t":"14 of 14 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/mcp/tools_deps.go","t":"20 of 47 changed lines not run by any test, by pr196-coverage.out"}],"lines":[1035,369,1771],"mech":"11 import hunks"},"120":{"m":72,"read":[6,5,7,28,8,9,19,14,15,31,16,4,22,23,20,21,12,13,26,27,17,18,24,25,10,11,0,2,3],"why":"no measurable change 4 \u00b7 tests only 1","sk":{"1":"no measurable change","29":"no measurable change","32":"no measurable change","33":"no measurable change","30":"tests only"},"gate":[8,8],"groups":[{"files":[6,5,7,28,8,9,19,14,15,31,16,4,22,23,20,21,12,13,26,27,17,18,24,25,10,11,0,2,3],"head":"library_reach.go, then what uses it"}],"facts":[{"p":"cmd/ast-metrics/main.go","t":"main() was fixed 5 times in the past year"},{"p":"internal/analyzer/ruleset/rule_coupling.go","t":"CheckFile() was fixed 2 times in the past year"},{"p":"internal/engine/golang/deps/resolver.go","t":"ForFiles() was fixed 2 times in the past year"},{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"cmd/ast-metrics/main.go","t":"38 of 38 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/csharp/deps/resolver.go","t":"4 of 7 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/golang/module/module.go","t":"14 of 14 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/mcp/tools_deps.go","t":"20 of 47 changed lines not run by any test, by pr196-coverage.out"}],"lines":[1035,369,1771],"mech":"11 import hunks"},"none":{"m":45,"read":[6,5,7,28,4,22,23,20,21,10,11,2,3],"why":"ranked lower 10 \u00b7 tests only 7 \u00b7 no measurable change 4","sk":{"0":"ranked lower","1":"no measurable change","8":"ranked lower","12":"ranked lower","14":"ranked lower","16":"ranked lower","17":"ranked lower","19":"ranked lower","24":"ranked lower","26":"ranked lower","29":"no measurable change","31":"ranked lower","32":"no measurable change","33":"no measurable change","9":"tests only","13":"tests only","15":"tests only","18":"tests only","25":"tests only","27":"tests only","30":"tests only"},"gate":[8,8],"groups":[{"files":[6,5,7,28,4,22,23,20,21,10,11,2,3],"head":"library_reach.go, then what uses it"}],"facts":[{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, by pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, by pr196-coverage.out"}],"lines":[1035,369,1771],"mech":"11 import hunks"}};
-var MECH = {"imports": 11};
+var FILES = [{"p":"cmd/ast-metrics/main.go","lv":1,"n":0,"cx":127,"rd":60,"ln":63,"af":0,"ch":2,"fx":0,"cl":0,"ut":1,"gl":0,"r":"main() complexity 118 \u2192 127, +63 lines, no test touched","rr":[[1004,1063]],"gr":[]},{"p":"internal/analyzer/aggregator.go","lv":1,"n":0,"cx":1,"rd":0,"ln":2,"af":83,"ch":9,"fx":7,"cl":0,"ut":0,"gl":1,"r":"imported by 83 files, fixed 7\u00d7 in 90 days, 9 commits in 90 days","rr":[],"gr":[[177,177]]},{"p":"internal/analyzer/community_aggregator.go","lv":2,"n":0,"cx":5,"rd":13,"ln":24,"af":83,"ch":11,"fx":2,"cl":0,"ut":0,"gl":5,"r":"imported by 83 files, +24 lines, new fileCommunitiesOf() complexity 5","rr":[[346,360]],"gr":[[82,82],[340,340]]},{"p":"internal/analyzer/community_graph.go","lv":2,"n":0,"cx":51,"rd":12,"ln":18,"af":83,"ch":2,"fx":0,"cl":0,"ut":0,"gl":2,"r":"imported by 83 files, new addFile() complexity 4, +18 lines","rr":[[112,112],[217,217],[233,233],[250,250],[337,344]],"gr":[[86,86]]},{"p":"internal/analyzer/file_dependency_analyzer.go","lv":2,"n":0,"cx":44,"rd":53,"ln":67,"af":83,"ch":4,"fx":1,"cl":0,"ut":0,"gl":3,"r":"imported by 83 files, +64/\u22123 lines, resolveFileDependencies() complexity 29 \u2192 44","rr":[[97,101],[122,127],[141,141],[152,152],[157,157],[170,176],[184,202],[219,229]],"gr":[[22,27]]},{"p":"internal/analyzer/library_conformance_test.go","lv":0,"n":1,"cx":12,"rd":38,"ln":144,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":77,"r":"","rr":[[98,140]],"gr":[[25,93]],"t":1},{"p":"internal/analyzer/library_reach.go","lv":2,"n":1,"cx":17,"rd":155,"ln":266,"af":83,"ch":3,"fx":0,"cl":0,"ut":0,"gl":54,"r":"+266 lines, new LibraryUses() complexity 17, +4 more, imported by 83 files","rr":[[30,35],[66,265]],"gr":[[16,26],[39,57]]},{"p":"internal/analyzer/library_reach_test.go","lv":0,"n":1,"cx":4,"rd":99,"ln":146,"af":0,"ch":2,"fx":0,"cl":0,"ut":0,"gl":30,"r":"","rr":[[10,63],[85,144]],"gr":[[67,80]],"t":1},{"p":"internal/analyzer/ruleset/rule_coupling.go","lv":1,"n":0,"cx":10,"rd":26,"ln":34,"af":6,"ch":1,"fx":1,"cl":0,"ut":0,"gl":3,"r":"+25/\u22129 lines, new forbiddenName() complexity 5, imported by 6 files","rr":[[55,66],[79,86]],"gr":[]},{"p":"internal/analyzer/ruleset/rule_coupling_test.go","lv":0,"n":0,"cx":3,"rd":29,"ln":35,"af":0,"ch":1,"fx":1,"cl":0,"ut":0,"gl":0,"r":"","rr":[[309,340]],"gr":[],"t":1},{"p":"internal/command/who_uses_command.go","lv":2,"n":1,"cx":18,"rd":134,"ln":242,"af":3,"ch":3,"fx":1,"cl":0,"ut":0,"gl":47,"r":"+242 lines, new printReach() complexity 18, +6 more, imported by 3 files","rr":[[52,241]],"gr":[[25,48]]},{"p":"internal/command/who_uses_command_test.go","lv":0,"n":1,"cx":10,"rd":81,"ln":116,"af":0,"ch":2,"fx":0,"cl":0,"ut":0,"gl":16,"r":"","rr":[[17,114]],"gr":[],"t":1},{"p":"internal/engine/csharp/deps/resolver.go","lv":1,"n":0,"cx":11,"rd":7,"ln":13,"af":1,"ch":3,"fx":1,"cl":100,"ut":0,"gl":2,"r":"ForFiles() 100% similar to internal/engine/java/deps/resolver.go:ForFiles(), +13 lines, ForFiles() complexity 9 \u2192 11, +1 more","rr":[[59,61],[78,79]],"gr":[[74,74]]},{"p":"internal/engine/csharp/deps/resolver_test.go","lv":0,"n":1,"cx":3,"rd":5,"ln":16,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":5,"r":"","rr":[[9,13]],"gr":[],"t":1},{"p":"internal/engine/dependency/relative.go","lv":1,"n":1,"cx":5,"rd":7,"ln":20,"af":15,"ch":1,"fx":0,"cl":0,"ut":0,"gl":5,"r":"imported by 15 files, +20 lines, new IsRelative() complexity 5","rr":[[10,19]],"gr":[]},{"p":"internal/engine/dependency/relative_test.go","lv":0,"n":1,"cx":5,"rd":12,"ln":18,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":3,"r":"","rr":[[5,15]],"gr":[],"t":1},{"p":"internal/engine/dependency/resolver.go","lv":0,"n":0,"cx":0,"rd":0,"ln":17,"af":15,"ch":3,"fx":1,"cl":0,"ut":0,"gl":6,"r":"imported by 15 files, +17 lines, fixed 1\u00d7 in 90 days","rr":[],"gr":[[33,42]]},{"p":"internal/engine/golang/deps/resolver.go","lv":1,"n":0,"cx":7,"rd":13,"ln":32,"af":1,"ch":4,"fx":2,"cl":0,"ut":0,"gl":8,"r":"+31/\u22121 lines, new IsStandardLibrary() complexity 3, +1 more, fixed 2\u00d7 in 90 days","rr":[[39,39],[48,48],[54,54],[70,75],[84,89]],"gr":[[61,65],[78,78]]},{"p":"internal/engine/golang/deps/resolver_test.go","lv":0,"n":0,"cx":5,"rd":32,"ln":40,"af":0,"ch":4,"fx":2,"cl":0,"ut":0,"gl":1,"r":"","rr":[[25,55]],"gr":[],"t":1},{"p":"internal/engine/golang/module/module.go","lv":1,"n":0,"cx":5,"rd":14,"ln":19,"af":2,"ch":2,"fx":1,"cl":0,"ut":1,"gl":2,"r":"+19 lines, new ModulePathOf() complexity 5, no test touched","rr":[[35,48]],"gr":[]},{"p":"internal/engine/java/deps/resolver.go","lv":2,"n":0,"cx":11,"rd":11,"ln":18,"af":1,"ch":3,"fx":1,"cl":100,"ut":0,"gl":3,"r":"ForFiles() 100% similar to internal/engine/csharp/deps/resolver.go:ForFiles(), +18 lines, new IsStandardLibrary() complexity 4, +1 more","rr":[[46,48],[65,71]],"gr":[[61,61]]},{"p":"internal/engine/java/deps/resolver_test.go","lv":0,"n":1,"cx":3,"rd":5,"ln":16,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":5,"r":"","rr":[[9,13]],"gr":[],"t":1},{"p":"internal/engine/php/deps/resolver.go","lv":2,"n":1,"cx":9,"rd":23,"ln":77,"af":1,"ch":1,"fx":0,"cl":84,"ut":0,"gl":27,"r":"+77 lines, new ForFiles() complexity 9, +1 more, ForFiles() 84% similar to internal/engine/csharp/deps/resolver.go:ForFiles()","rr":[[25,43],[57,69]],"gr":[[15,22],[46,51],[75,76]]},{"p":"internal/engine/php/deps/resolver_test.go","lv":0,"n":1,"cx":5,"rd":37,"ln":57,"af":0,"ch":1,"fx":0,"cl":0,"ut":0,"gl":9,"r":"","rr":[[11,54]],"gr":[],"t":1},{"p":"internal/engine/rust/deps/resolver.go","lv":0,"n":0,"cx":3,"rd":9,"ln":15,"af":1,"ch":3,"fx":1,"cl":0,"ut":0,"gl":3,"r":"+15 lines, new IsStandardLibrary() complexity 3, fixed 1\u00d7 in 90 days","rr":[[82,91]],"gr":[[78,78]]},{"p":"internal/engine/rust/deps/resolver_test.go","lv":0,"n":0,"cx":3,"rd":8,"ln":15,"af":0,"ch":3,"fx":1,"cl":0,"ut":0,"gl":0,"r":"","rr":[[61,65]],"gr":[],"t":1},{"p":"internal/engine/typescript/deps/resolver.go","lv":1,"n":0,"cx":9,"rd":41,"ln":68,"af":1,"ch":2,"fx":1,"cl":0,"ut":0,"gl":12,"r":"+67/\u22121 lines, new IsLibrary() complexity 9, +2 more, fixed 1\u00d7 in 90 days","rr":[[28,30],[35,46],[51,53],[81,102],[124,126]],"gr":[[62,74]]},{"p":"internal/engine/typescript/deps/resolver_test.go","lv":0,"n":0,"cx":8,"rd":45,"ln":52,"af":0,"ch":2,"fx":1,"cl":0,"ut":0,"gl":0,"r":"","rr":[[192,236]],"gr":[],"t":1},{"p":"internal/engine/util.go","lv":2,"n":0,"cx":10,"rd":27,"ln":32,"af":111,"ch":6,"fx":3,"cl":0,"ut":1,"gl":2,"r":"imported by 111 files, +32 lines, new GetInterfacesInFile() complexity 10","rr":[[85,112]],"gr":[]},{"p":"internal/mcp/server.go","lv":0,"n":0,"cx":1,"rd":0,"ln":1,"af":1,"ch":1,"fx":0,"cl":0,"ut":0,"gl":1,"r":"imported by 1 file, +1 lines, 1 commit in 90 days","rr":[],"gr":[[27,27]]},{"p":"internal/mcp/server_test.go","lv":0,"n":0,"cx":0,"rd":0,"ln":0,"af":0,"ch":0,"fx":0,"cl":0,"ut":0,"gl":0,"r":"","t":1},{"p":"internal/mcp/tools_deps.go","lv":0,"n":0,"cx":8,"rd":38,"ln":55,"af":1,"ch":1,"fx":0,"cl":0,"ut":0,"gl":12,"r":"+55 lines, new handleWhoUses() complexity 8, imported by 1 file","rr":[[278,315]],"gr":[[265,273]]},{"p":"internal/report/json_report_generator.go","lv":0,"n":0,"cx":12,"rd":1,"ln":1,"af":6,"ch":2,"fx":0,"cl":0,"ut":1,"gl":0,"r":"imported by 6 files, buildReport() complexity 12, no test touched","rr":[[187,187]],"gr":[]},{"p":"internal/report/types.go","lv":0,"n":0,"cx":0,"rd":0,"ln":4,"af":6,"ch":2,"fx":0,"cl":0,"ut":1,"gl":1,"r":"imported by 6 files, +4 lines, no test touched","rr":[],"gr":[[63,63]]}];
+var PLANS = {"5":{"m":9,"read":[6],"why":"17 ranked lower \u00b7 12 tests only \u00b7 4 no measurable change","sk":{"0":"ranked lower","1":"no measurable change","2":"ranked lower","3":"ranked lower","4":"ranked lower","8":"ranked lower","10":"ranked lower","12":"ranked lower","14":"ranked lower","16":"ranked lower","17":"ranked lower","19":"ranked lower","20":"ranked lower","22":"ranked lower","24":"ranked lower","26":"ranked lower","28":"ranked lower","29":"no measurable change","31":"ranked lower","32":"no measurable change","33":"no measurable change","5":"tests only","7":"tests only","9":"tests only","11":"tests only","13":"tests only","15":"tests only","18":"tests only","21":"tests only","23":"tests only","25":"tests only","27":"tests only","30":"tests only"},"facts":[{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, according to pr196-coverage.out"}]},"30":{"m":30,"read":[6,28,4,22,20,12,8,10,2,3],"why":"12 tests only \u00b7 8 ranked lower \u00b7 4 no measurable change","sk":{"0":"ranked lower","1":"no measurable change","14":"ranked lower","16":"ranked lower","17":"ranked lower","19":"ranked lower","24":"ranked lower","26":"ranked lower","29":"no measurable change","31":"ranked lower","32":"no measurable change","33":"no measurable change","5":"tests only","7":"tests only","9":"tests only","11":"tests only","13":"tests only","15":"tests only","18":"tests only","21":"tests only","23":"tests only","25":"tests only","27":"tests only","30":"tests only"},"facts":[{"p":"internal/analyzer/ruleset/rule_coupling.go","t":"CheckFile() was fixed 2 times in the past year"},{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/csharp/deps/resolver.go","t":"4 of 7 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, according to pr196-coverage.out"}]},"60":{"m":60,"read":[6,5,7,28,8,9,19,14,15,31,16,4,22,23,20,21,12,26,17,24,10,0,2,3],"why":"6 tests only \u00b7 4 no measurable change","sk":{"1":"no measurable change","29":"no measurable change","32":"no measurable change","33":"no measurable change","11":"tests only","13":"tests only","18":"tests only","25":"tests only","27":"tests only","30":"tests only"},"facts":[{"p":"cmd/ast-metrics/main.go","t":"main() was fixed 5 times in the past year"},{"p":"internal/analyzer/ruleset/rule_coupling.go","t":"CheckFile() was fixed 2 times in the past year"},{"p":"internal/engine/golang/deps/resolver.go","t":"ForFiles() was fixed 2 times in the past year"},{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"cmd/ast-metrics/main.go","t":"38 of 38 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/csharp/deps/resolver.go","t":"4 of 7 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/golang/module/module.go","t":"14 of 14 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/mcp/tools_deps.go","t":"20 of 47 changed lines not run by any test, according to pr196-coverage.out"}]},"120":{"m":72,"read":[6,5,7,28,8,9,19,14,15,31,16,4,22,23,20,21,12,13,26,27,17,18,24,25,10,11,0,2,3],"why":"4 no measurable change \u00b7 1 tests only","sk":{"1":"no measurable change","29":"no measurable change","32":"no measurable change","33":"no measurable change","30":"tests only"},"facts":[{"p":"cmd/ast-metrics/main.go","t":"main() was fixed 5 times in the past year"},{"p":"internal/analyzer/ruleset/rule_coupling.go","t":"CheckFile() was fixed 2 times in the past year"},{"p":"internal/engine/golang/deps/resolver.go","t":"ForFiles() was fixed 2 times in the past year"},{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"cmd/ast-metrics/main.go","t":"38 of 38 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/csharp/deps/resolver.go","t":"4 of 7 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/golang/module/module.go","t":"14 of 14 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/mcp/tools_deps.go","t":"20 of 47 changed lines not run by any test, according to pr196-coverage.out"}]},"none":{"m":45,"read":[6,5,7,28,4,22,23,20,21,10,11,2,3],"why":"10 ranked lower \u00b7 7 tests only \u00b7 4 no measurable change","sk":{"0":"ranked lower","1":"no measurable change","8":"ranked lower","12":"ranked lower","14":"ranked lower","16":"ranked lower","17":"ranked lower","19":"ranked lower","24":"ranked lower","26":"ranked lower","29":"no measurable change","31":"ranked lower","32":"no measurable change","33":"no measurable change","9":"tests only","13":"tests only","15":"tests only","18":"tests only","25":"tests only","27":"tests only","30":"tests only"},"facts":[{"p":"internal/analyzer/aggregator.go","t":"internal/analyzer depends on internal/engine/php/deps for the first time"},{"p":"internal/engine/typescript/deps/resolver.go","t":"internal/engine/typescript/deps depends on internal/engine/typescript/module for the first time"},{"p":"internal/analyzer/library_reach.go","t":"15 of 161 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/command/who_uses_command.go","t":"49 of 162 changed lines not run by any test, according to pr196-coverage.out"},{"p":"internal/engine/util.go","t":"25 of 25 changed lines not run by any test, according to pr196-coverage.out"}]}};
 (function () {
   var grid = document.getElementById('squares');
   var readout = document.getElementById('readout');
-  var rows = document.getElementById('rows');
+  var rows = document.getElementById('rows'), why = document.getElementById('why');
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var squares = FILES.map(function (f, i) {
     var s = document.createElement('i');
@@ -389,8 +395,7 @@ var MECH = {"imports": 11};
     else if (f.t) text = 'Read #' + (rank + 1) + ': test, right after the file it exercises';
     else text = 'Read #' + (rank + 1) + ': ' + f.r;
     readout.appendChild(document.createTextNode(text));
-    var r = rows.querySelector('[data-i="' + i + '"]');
-    if (r) r.classList.add('hot');
+    document.querySelectorAll('.tbl [data-i="' + i + '"]').forEach(function (r) { r.classList.add('hot'); });
   }
   // Same thresholds as the terminal table: one cell, plus one per step passed.
   function cells(v, steps) { if (v <= 0) return 0; var n = 1; steps.forEach(function (s) { if (v > s) n++; }); return n; }
@@ -402,58 +407,92 @@ var MECH = {"imports": 11};
     if (v > 0) td.appendChild(document.createTextNode(' ' + (label || v)));
     return td;
   }
+  // The signals behind the order, as in the "Why these files" table.
   var COLS = [
     { h: 'complexity', td: function (f) { return bar(f.cx, [5, 10, 20, 40]); } },
-    { h: 'to read', td: function (f) { return bar(f.rd, [50, 150, 300, 600], f.rd + (f.gl || 0) < f.ln ? f.rd + ' of ' + f.ln : f.rd); } },
-    { h: 'glance', td: function (f) { return bar(f.gl || 0, [50, 150, 300, 600]); }, shown: function (f) { return f.gl > 0; } },
-    { h: 'used by', td: function (f) { return f.t ? bar(0, []) : bar(f.af, [2, 5, 10, 25]); }, shown: function (f) { return f.af > 0; } },
+    { h: 'used by', td: function (f) { return bar(f.af, [2, 5, 10, 25]); }, shown: function (f) { return f.af > 0; } },
     { h: 'commits 90d', td: function (f) {
       var td = bar(f.ch, [2, 5, 10, 20]);
       if (f.fx) td.appendChild(el('span', 'bad', ', ' + f.fx + (f.fx > 1 ? ' fixes' : ' fix')));
       return td;
     }, shown: function (f) { return f.ch > 0; } },
     { h: 'clone', td: function (f) { return f.cl ? el('td', f.cl >= 90 ? 'bad' : 'or', f.cl + '%') : el('td'); }, shown: function (f) { return f.cl > 0; } },
-    { h: 'tests', td: function (f) { return f.t ? el('td') : f.ut ? el('td', 'bad', '✗') : el('td', 'k0', '✓'); } }
+    { h: 'test changed', td: function (f) { return f.ut ? el('td', 'bad', '✗') : el('td', 'k0', '✓'); } }
   ];
+  // Line spans as the terminal words them: at most four, a lone line is named.
+  var SPANS = 4;
+  function spans(ranges, cls) {
+    ranges = ranges || [];
+    var text = ranges.slice(0, SPANS).map(function (r) { return r[1] > r[0] ? r[0] + '-' + r[1] : '' + r[0]; }).join(', ');
+    if (ranges.length > SPANS) text += ', +' + (ranges.length - SPANS) + ' more';
+    if (ranges.length === 1 && ranges[0][1] <= ranges[0][0]) text = 'line ' + text;
+    return el('td', cls, text);
+  }
+  // The shortest end of each path that names one file only.
+  function tail(p, n) { var parts = p.split('/'); return parts.slice(Math.max(0, parts.length - n)).join('/'); }
+  function shortNames(paths) {
+    var out = {}, left = paths.length;
+    for (var depth = 1; left > 0; depth++) {
+      var counts = {};
+      paths.forEach(function (p) { var t = tail(p, depth); counts[t] = (counts[t] || 0) + 1; });
+      paths.forEach(function (p) {
+        var t = tail(p, depth);
+        if (!out[p] && (counts[t] === 1 || t === p)) { out[p] = t; left--; }
+      });
+    }
+    return out;
+  }
   function duration(m) { return m < 60 ? m + ' min' : m % 60 ? Math.floor(m / 60) + ' h ' + ('0' + m % 60).slice(-2) : m / 60 + ' h'; }
   var SHOWN = 9;
   function renderRows(plan) {
     var files = plan.read.map(function (i) { return FILES[i]; });
-    var cols = COLS.filter(function (c) { return !c.shown || files.some(c.shown); });
     var anyTag = files.some(function (f) { return f.n || f.t; });
     var head = document.getElementById('thead'), hr = el('tr');
     head.textContent = '';
     hr.appendChild(el('th')); hr.appendChild(el('th')); if (anyTag) hr.appendChild(el('th'));
-    cols.forEach(function (c) { hr.appendChild(el('th', null, c.h)); });
+    hr.appendChild(el('th', null, 'lines to read closely')); hr.appendChild(el('th', null, 'lines to glance at'));
     head.appendChild(hr);
     rows.textContent = '';
-    var span = 2 + (anyTag ? 1 : 0) + cols.length, n = 0, shown = 0;
-    plan.groups.forEach(function (g) {
-      if (shown >= SHOWN) return;
-      if (g.head) {
-        var gr = el('tr', 'grp'), gd = el('td', null, '↳ ' + g.head);
-        gd.colSpan = span; gr.appendChild(gd); rows.appendChild(gr);
-      }
-      g.files.forEach(function (i) {
-        n++;
-        if (shown >= SHOWN) return;
-        shown++;
-        var f = FILES[i], tr = el('tr');
-        tr.dataset.i = i;
-        tr.appendChild(el('td', f.t ? 'tg' : 'k' + f.lv, n));
-        tr.appendChild(el('td', 'pa', f.p));
-        if (anyTag) tr.appendChild(f.n ? el('td', 'nw', 'new') : el('td', 'tg', f.t ? 'test' : ''));
-        cols.forEach(function (c) { tr.appendChild(c.td(f)); });
-        rows.appendChild(tr);
-      });
+    var shown = plan.read.slice(0, SHOWN);
+    shown.forEach(function (i, n) {
+      var f = FILES[i], tr = el('tr');
+      tr.dataset.i = i;
+      tr.appendChild(el('td', f.t ? 'tg' : 'k' + f.lv, n + 1));
+      tr.appendChild(el('td', 'pa', f.p));
+      if (anyTag) tr.appendChild(f.t ? el('td', 'tg', 'test') : f.n ? el('td', 'nw', 'new') : el('td'));
+      tr.appendChild(spans(f.rr));
+      tr.appendChild(spans(f.gr, 'tg'));
+      rows.appendChild(tr);
     });
-    var extra = plan.read.length - shown;
+    var extra = plan.read.length - shown.length;
     document.getElementById('more').textContent = extra > 0 ? '… ' + extra + ' more' : '';
+
+    var code = files.filter(function (f) { return !f.t; });
+    var cols = COLS.filter(function (c) { return !c.shown || code.some(c.shown); });
+    var names = shortNames(code.map(function (f) { return f.p; }));
+    var whyHead = document.getElementById('whyhead'), wr = el('tr'), listed = 0;
+    whyHead.textContent = ''; why.textContent = '';
+    wr.appendChild(el('th')); wr.appendChild(el('th'));
+    cols.forEach(function (c) { wr.appendChild(el('th', null, c.h)); });
+    whyHead.appendChild(wr);
+    shown.forEach(function (i, n) {
+      var f = FILES[i];
+      if (f.t) return;
+      listed++;
+      var tr = el('tr');
+      tr.dataset.i = i;
+      tr.appendChild(el('td', 'k' + f.lv, n + 1));
+      tr.appendChild(el('td', 'pa', names[f.p]));
+      cols.forEach(function (c) { tr.appendChild(c.td(f)); });
+      why.appendChild(tr);
+    });
+    document.getElementById('whyblock').hidden = !code.length;
+    document.getElementById('whymore').textContent = code.length > listed ? '… ' + (code.length - listed) + ' more' : '';
+
+    var closely = 0, glance = 0;
+    files.forEach(function (f) { closely += f.rd; glance += f.gl || 0; });
+    document.getElementById('totals').textContent = closely + ' lines to read closely, ' + glance + ' to glance at';
     document.getElementById('summary').textContent = 'Read ' + plan.read.length + ' of ' + FILES.length + ' changed files, about ' + duration(plan.m) + '.';
-    var L = plan.lines, linesText = L[0] + ' of ' + L[2] + ' changed lines to read closely' + (L[1] ? ', ' + L[1] + ' to glance at' : '');
-    document.getElementById('lines').textContent = linesText + (plan.mech ? ': ' + plan.mech : '') + '.';
-    var first = FILES[plan.read[0]];
-    document.getElementById('start').textContent = 'Start with ' + first.p + ': ' + first.r + '.';
     var facts = document.getElementById('facts');
     facts.textContent = '';
     plan.facts.slice(0, 4).forEach(function (f) {
@@ -493,12 +532,26 @@ var MECH = {"imports": 11};
   }
   grid.addEventListener('pointerover', function (e) { if (e.target.dataset.i) show(+e.target.dataset.i); });
   grid.addEventListener('pointerdown', function (e) { if (e.target.dataset.i) show(+e.target.dataset.i); });
-  rows.addEventListener('pointerover', function (e) {
-    var r = e.target.closest('tr');
-    if (r && r.dataset.i) show(+r.dataset.i);
+  [rows, why].forEach(function (body) {
+    body.addEventListener('pointerover', function (e) {
+      var r = e.target.closest('tr');
+      if (r && r.dataset.i) show(+r.dataset.i);
+    });
   });
 
-  renderRows(PLANS.none);
+  // The tallest plan sets the height of the terminal, so that the page below
+  // stays still when the budget changes.
+  var out = document.querySelector('.out');
+  function settle() {
+    var tallest = 0;
+    out.setAttribute('aria-busy', 'true');
+    out.style.minHeight = '';
+    Object.keys(PLANS).forEach(function (k) { renderRows(PLANS[k]); tallest = Math.max(tallest, out.offsetHeight); });
+    renderRows(PLANS[current]);
+    out.style.minHeight = tallest + 'px';
+    out.removeAttribute('aria-busy');
+  }
+  settle();
 
   var time = document.getElementById('time'), knob = time.querySelector('.knob');
   var buttons = Array.prototype.slice.call(time.querySelectorAll('button')), tour = [], touched = false;
@@ -515,8 +568,8 @@ var MECH = {"imports": 11};
   }
   function stopTour() { touched = true; tour.forEach(clearTimeout); tour = []; }
   slide(); time.classList.add('ready');
-  addEventListener('resize', slide);
-  if (document.fonts) document.fonts.ready.then(slide);
+  addEventListener('resize', function () { slide(); settle(); });
+  if (document.fonts) document.fonts.ready.then(function () { slide(); settle(); });
   time.addEventListener('click', function (e) {
     var b = e.target.closest('button');
     if (!b) return;
