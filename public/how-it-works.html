@@ -653,7 +653,7 @@ footer strong { color: var(--body); font-weight: 500; }
 <pre class="term" tabindex="0" aria-label="Terminal output of cribelo on pull request 196"><span class="ps">$</span> cribelo
 <span class="head">cribelo</span> <span class="dim">· 34 files changed vs origin/main (merge-base b2f83dc)</span>
 
-<span class="head">Read 13 of 34 changed files, about 45 min.</span>
+<span class="head">Read 11 of 34 changed files, about 43 min.</span>
 
 <span class="dim">                                                           lines to read closely               lines to glance at</span>
    1  <span class="pa">internal/analyzer/library_reach.go</span>             new   30-35, 66-265                       <span class="dim">16-26, 39-57</span>
@@ -663,19 +663,19 @@ footer strong { color: var(--body); font-weight: 500; }
    5  <span class="pa">internal/analyzer/file_dependency_analyzer.go</span>        97-101, 122-127, 141, 152, +4 more  <span class="dim">22-27</span>
    6  <span class="pa">internal/engine/php/deps/resolver.go</span>           new   25-43, 57-69                        <span class="dim">15-22, 46-51, 75-76</span>
    7  <span class="pa">internal/engine/php/deps/resolver_test.go</span>      test  11-54
-   8  <span class="pa">internal/engine/java/deps/resolver.go</span>                46-48, 65-71                        <span class="dim">line 61</span>
-      <span class="dim">… 5 more</span>
-
-<span class="head">Why these files</span>
-<span class="dim">                                   complexity  used by    commits 90d        clone  test changed</span>
-   1  <span class="pa">library_reach.go</span>             ▮▮▮▯▯ 17    ▮▮▮▮▮ 83   ▮▮▯▯▯ 3                   <span class="k0">✓</span>
-   4  <span class="pa">util.go</span>                      ▮▮▯▯▯ 10    ▮▮▮▮▮ 111  ▮▮▮▯▯ 6<span class="bad">, 3 fixes</span>          <span class="bad">✗</span>
-   5  <span class="pa">file_dependency_analyzer.go</span>  ▮▮▮▮▮ 44    ▮▮▮▮▮ 83   ▮▮▯▯▯ 4<span class="bad">, 1 fix</span>            <span class="k0">✓</span>
-   6  <span class="pa">php/deps/resolver.go</span>         ▮▮▯▯▯ 9     ▮▯▯▯▯ 1    ▮▯▯▯▯ 1            <span class="bad">84%</span>    <span class="k0">✓</span>
-   8  <span class="pa">java/deps/resolver.go</span>        ▮▮▮▯▯ 11    ▮▯▯▯▯ 1    ▮▮▯▯▯ 3<span class="bad">, 1 fix</span>     <span class="bad">100%</span>   <span class="k0">✓</span>
+   8  <span class="pa">internal/command/who_uses_command.go</span>           new   52-241                              <span class="dim">25-48</span>
       <span class="dim">… 3 more</span>
 
-<span class="head">Totals</span>  688 lines to read closely, 280 to glance at<span class="dim"> (20 and 60 lines a minute)</span>
+<span class="head">Why these files</span>
+<span class="dim">                                   complexity  used by    commits 90d      clone  test changed</span>
+   1  <span class="pa">library_reach.go</span>             ▮▮▮▯▯ 17    ▮▮▮▮▮ 83   ▮▮▯▯▯ 3                 <span class="k0">✓</span>
+   4  <span class="pa">util.go</span>                      ▮▮▯▯▯ 10    ▮▮▮▮▮ 111  ▮▯▯▯▯ 2<span class="bad">, 1 fix</span>          <span class="bad">✗</span>
+   5  <span class="pa">file_dependency_analyzer.go</span>  ▮▮▮▮▮ 44    ▮▮▮▮▮ 83   ▮▮▯▯▯ 3                 <span class="k0">✓</span>
+   6  <span class="pa">resolver.go</span>                  ▮▮▯▯▯ 9     ▮▯▯▯▯ 1    ▮▯▯▯▯ 1          <span class="bad">84%</span>    <span class="k0">✓</span>
+   8  <span class="pa">who_uses_command.go</span>          ▮▮▮▯▯ 18    ▮▮▯▯▯ 3    ▮▮▯▯▯ 3<span class="bad">, 1 fix</span>          <span class="k0">✓</span>
+      <span class="dim">… 2 more</span>
+
+<span class="head">Totals</span>  672 lines to read closely, 272 to glance at<span class="dim"> (20 and 60 lines a minute)</span>
 <span class="dim">Set aside in the whole change: 11 import hunks.</span>
 
 <span class="head">Worth knowing</span><span class="dim">  true by construction, not predicted</span>
@@ -685,8 +685,8 @@ footer strong { color: var(--body); font-weight: 500; }
   <span class="pa">internal/command/who_uses_command.go</span>  49 of 162 changed lines not run by any test, according to pr196-coverage.out
   <span class="pa">internal/engine/util.go</span>  25 of 25 changed lines not run by any test, according to pr196-coverage.out
 
-<span class="head">Skip (21)</span>
-  10 ranked lower · 7 tests only · 4 no measurable change<span class="dim">    cribelo skip</span>
+<span class="head">Skip (23)</span>
+  11 ranked lower · 8 tests only · 4 no measurable change<span class="dim">    cribelo skip</span>
 </pre>
     <p>The first table says where to read: for each file, the line ranges to read closely and the ones a glance is enough for. In the pull request comment, each range opens the diff on those lines. Under it, each column is a measure you can check: cyclomatic complexity of the touched functions, files that import this one, commits and fix commits in the last ninety days, similarity with another function, a test changed with the file.</p>
     <h3>A gate on what is measured</h3>
